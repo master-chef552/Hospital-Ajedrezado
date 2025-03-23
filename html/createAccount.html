@@ -1,23 +1,33 @@
-<!-- createAccount.html -->
+<!-- createAccount.html --> 
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/createAccount.css">
   <title>Crear Cuenta</title>
 </head>
+
 <body>
   <div class="register-container">
     <h2>Crear Cuenta</h2>
     <form action="#" method="post">
-      <input type="text" placeholder="Nombre completo" required>
-      <input type="email" placeholder="Correo electrónico" required>
-      <input type="password" placeholder="Contraseña" required>
-      <input type="password" placeholder="Confirmar contraseña" required>
+      <input type="text" name="nombre" placeholder="Nombre completo" required>
+      <input type="email" name="correo" placeholder="Correo electrónico" required>
+      <input type="password" name="contrasena" placeholder="Contraseña" required>
+      <input type="password" name="confirmarContrasena" placeholder="Confirmar contraseña" required>
+      <input type="text" name="curp" placeholder="CURP" required>
+      <input type="date" name="fechaNacimiento" id="fechaNacimiento" placeholder="Fecha de Nacimiento" required>
       <button type="submit">Registrarse</button>
       <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
     </form>
   </div>
+  
+  <script>
+    // Establece la fecha máxima para el campo de fecha de nacimiento como la fecha actual
+    const fechaNacimiento = document.getElementById('fechaNacimiento');
+    const hoy = new Date().toISOString().split('T')[0];
+    fechaNacimiento.setAttribute('max', hoy);
+  </script>
 </body>
 </html>
