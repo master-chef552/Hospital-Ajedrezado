@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/createAccount.css">
   <title>Crear Cuenta</title>
+  <link rel="icon" href="../imagenes/kaguyafondo.jpg" type="image/png">
 </head>
-
 <body>
   <div class="register-container">
     <h2>Crear Cuenta</h2>
-    <form action="#" method="post">
+    <form action="#" method="post" id="registerForm">
       <input type="text" name="nombre" placeholder="Nombre completo" required>
       <input type="email" name="correo" placeholder="Correo electrónico" required>
       <input type="password" name="contrasena" placeholder="Contraseña" required>
@@ -28,6 +28,23 @@
     const fechaNacimiento = document.getElementById('fechaNacimiento');
     const hoy = new Date().toISOString().split('T')[0];
     fechaNacimiento.setAttribute('max', hoy);
+
+    // Función que valida la CURP usando la expresión regular corregida
+    function validarCURP(curp) {
+      const regexCURP = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[0-9A-Z][0-9]$/;
+      return regexCURP.test(curp);
+    }
+
+    // Agrega la validación al envío del formulario
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      const curpInput = document.querySelector("input[name='curp']").value.trim().toUpperCase();
+      
+      if (!validarCURP(curpInput)) {
+        alert("CURP no válida. Verifica tus datos.");
+        e.preventDefault(); // Detiene el envío del formulario si la CURP no es válida
+      }
+    });
   </script>
 </body>
 </html>
+

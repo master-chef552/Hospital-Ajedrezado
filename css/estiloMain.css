@@ -129,7 +129,7 @@ body {
 /* Especialidades: ahora en filas de 4, bordes curvos y gris vivo */
 .specialty {
   box-sizing: border-box;
-  background-color: #d3d3d3;
+  background-color: #fefefe;
   width: calc(25% - 20px);  /* 4 columnas */
   margin: 10px;
   padding: 40px;
