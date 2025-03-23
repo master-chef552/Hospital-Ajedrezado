@@ -59,3 +59,34 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* Barra de navegación simplificada */
+.navbar {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 15px;
+  text-align: left; /* Alinea el nombre del hospital a la izquierda */
+  font-size: 24px;
+  font-weight: bold;
+
+  /* Asegura que esté arriba y ocupe todo el ancho */
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* Ajusta el espacio del contenido para que no quede debajo de la barra */
+.register-container,
+.login-container {
+  margin-top: 70px; /* Desplaza el contenido hacia abajo */
+}
+
+/* Color */
+.color {
+  text-decoration: none; /* Elimina el subrayado */
+  color: inherit; /* Hereda el color del texto del elemento padre */
+}
+

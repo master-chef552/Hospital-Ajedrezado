@@ -18,6 +18,12 @@ body {
   flex: 1;
 }
 
+/* Color */
+.color {
+  text-decoration: none; /* Elimina el subrayado */
+  color: inherit; /* Hereda el color del texto del elemento padre */
+}
+
 /* Barra de navegación */
 .navbar {
   background-color: #007BFF;
