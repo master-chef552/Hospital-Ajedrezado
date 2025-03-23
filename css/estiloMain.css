@@ -1,0 +1,188 @@
+/* Aseguramos que html y body ocupen todo el alto de la ventana */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fondo con imagen */
+body {
+  background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* El wrapper contendrá el contenido principal y ocupará el espacio restante */
+.wrapper {
+  flex: 1;
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hospital-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+}
+
+.user-controls button {
+  background-color: #fff;
+  color: #007BFF;
+  border: none;
+  padding: 10px 15px;
+  margin-left: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.user-controls button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Foto de perfil: círculo placeholder */
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-left: 10px;
+  overflow: hidden;
+}
+
+/* Ajuste para la imagen del perfil */
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.description {
+  font-family: Calibri, sans-serif;
+  font-size: 18px;
+  margin: 15px 20px;
+  color: #333;
+  line-height: 1.6;
+  text-align: justify;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos dentro de la descripción */
+.description h2 {
+  color: #007BFF;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.description h3 {
+  color: #0056b3;
+  font-size: 20px;
+  margin-top: 15px;
+  text-align: center;
+  font-style: italic;
+}
+
+
+/* Cuerpo principal: Especialidades médicas */
+/* Se usa flex-direction: row-reverse para que los elementos empiecen por la derecha */
+.specialties {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+/* Especialidades: ahora en filas de 4, bordes curvos y gris vivo */
+/* Se utiliza Flexbox interno para separar el texto de la imagen */
+.specialty {
+  box-sizing: border-box;
+  background-color: #d3d3d3;
+  width: calc(25% - 20px);  /* 4 columnas */
+  margin: 10px;
+  padding: 40px;
+  border-radius: 15px;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Estilo para el texto de la especialidad */
+.specialty-text {
+  flex: 1;
+  text-align: left;
+}
+
+/* Estilo para el contenedor de imagen */
+.specialty-img {
+  width: 100px; /* Ajusta este valor según el tamaño deseado para la imagen */
+  height: 100px; /* Puedes ajustar la altura según tus necesidades */
+  background-color: #bbb; /* Color de fondo para visualizar el área de la imagen */
+  margin-left: 20px;
+  border-radius: 10px;
+}
+.specialties-header {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  color: #007BFF;
+}
+
+.specialties-header h2 {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #007BFF;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .specialty {
+    width: calc(50% - 20px);
+    flex-direction: column;
+    align-items: center;
+  }
+  .specialty-img {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .specialty {
+    width: calc(100% - 20px);
+  }
+}
+
+/* Pie de página */
+.footer {
+  background-color: #007BFF;
+  color: #fff;
+  text-align: center;
+  padding: 10px; /* Pie de página más delgado */
+  font-size: 14px;
+}
+
+
