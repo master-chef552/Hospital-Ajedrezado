@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Hospital Ajedrezado</title>
+  <link rel="icon" href="../imagenes/hospital-icon.png" type="image/png">
+  <link rel="stylesheet" href="../css/mainPaciente.css">
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Barra de navegación simplificada -->
+    <div class="navbar">
+        <a href="main.html" class="color"><div class="hospital-name">Hospital Ajedrezado</div></a>
+      <div class="profile-button">
+        <a href="profile.html">
+          <img src="../imagenes/sesion.png" alt="Perfil">
+        </a>
+      </div>
+    </div>
+
+    <!-- Mensaje de bienvenida -->
+    <div class="welcome">
+      <h1>Bienvenido</h1>
+    </div>
+
+    <!-- Secciones expansibles -->
+    <div class="windows">
+      <div class="expandable-window">
+        <div class="window-header">Ver mis citas</div>
+        <div class="window-content">
+          <!-- Aquí puedes incluir detalles o enlaces a la sección de citas -->
+          <p>Aquí se muestran tus citas programadas.</p>
+        </div>
+      </div>
+
+      <div class="expandable-window">
+        <div class="window-header">Agendar nuevas citas</div>
+        <div class="window-content">
+          <!-- Aquí puedes incluir el formulario o enlaces para agendar citas -->
+          <p>Aquí puedes agendar nuevas citas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Script para expandir o contraer el contenido de las ventanas al hacer clic en el encabezado
+    document.querySelectorAll('.expandable-window .window-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        // Si ya está expandido, contrae; de lo contrario, expande
+        if (content.style.maxHeight && content.style.maxHeight !== "0px") {
+          content.style.maxHeight = "0px";
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

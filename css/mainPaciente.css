@@ -1,0 +1,116 @@
+/* Reset y configuración general */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+}
+
+/* Color */
+.color {
+    text-decoration: none; /* Elimina el subrayado */
+    color: inherit; /* Hereda el color del texto del elemento padre */
+  }
+
+/* Contenedor principal */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Barra de navegación */
+.navbar {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 15px 20px;  /* Se agrega padding horizontal */
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+  }
+
+.hospital-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Contenedor para la imagen de perfil */
+.profile-button {
+    flex-shrink: 0;       /* Evita que se reduzca */
+    margin-right: 10px;     /* Ajusta el espacio a la derecha */
+  }
+
+  /* Estilos para la imagen de perfil */
+.profile-button img {
+    width: 40px;           /* Puedes reducir a 35px o 30px si es necesario */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+  }
+
+
+/* Sección de bienvenida */
+.welcome {
+  margin-top: 80px; /* Espacio para la navbar */
+  text-align: center;
+  padding: 20px;
+}
+
+.welcome h1 {
+  font-size: 48px;
+  color: #007BFF;
+}
+
+/* Secciones expansibles */
+.windows {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  flex: 1;
+}
+
+.expandable-window {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  transition: max-height 0.3s ease-out;
+}
+
+.window-header {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.window-content {
+  background-color: #f9f9f9;
+  padding: 15px;
+  max-height: 0; /* Inicialmente colapsado */
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+/* Opcional: Ajustes responsivos para pantallas pequeñas */
+@media (max-width: 480px) {
+    .profile-button img {
+      width: 30px;
+      height: 30px;
+    }
+  }
