@@ -8,23 +8,35 @@
   <title>Iniciar Sesión</title>
   <link rel="icon" href="../imagenes/kaguyafondo.jpg" type="image/png">
 </head>
-
 <body>
   <!-- Barra de navegación simplificada -->
-<div class="navbar">
-  <a href="main.html" class="color"><div class="hospital-name">Hospital Ajedrezado</div></a>
-</div>
-
+  <div class="navbar">
+    <a href="main.html" class="color">
+      <div class="hospital-name">Hospital Ajedrezado</div>
+    </a>
+  </div>
 
   <!-- Contenedor principal para usar Flexbox -->
   <div class="login-container">
     <h2>Iniciar Sesión</h2>
-    <form action="#" method="post">
+    <form id="loginForm" action="#" method="post">
       <input type="text" placeholder="Usuario" required>
       <input type="password" placeholder="Contraseña" required>
-      <a href="mainPaciente.html"><button type="submit">Ingresar</button></a>
+      <button type="submit">Ingresar</button>
       <p>¿No tienes cuenta? <a href="createAccount.html">Crear una cuenta</a></p>
     </form>
   </div>
+
+  <script>
+    // Agrega la validación y redirección en el envío del formulario
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault(); // Evita el envío real del formulario
+
+      // Aquí puedes agregar validaciones adicionales si lo requieres
+      
+      // Redirige a mainPaciente.html
+      window.location.href = "mainPaciente.html";
+    });
+  </script>
 </body>
 </html>

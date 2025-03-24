@@ -25,7 +25,7 @@
       <input type="password" name="confirmarContrasena" placeholder="Confirmar contraseña" required>
       <input type="text" name="curp" placeholder="CURP" required>
       <input type="date" name="fechaNacimiento" id="fechaNacimiento" placeholder="Fecha de Nacimiento" required>
-      <a href="login.html"><button type="submit">Registrarse</button></a>
+      <button type="submit">Registrarse</button>
       <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
     </form>
   </div>
@@ -50,6 +50,17 @@
         alert("CURP no válida. Verifica tus datos.");
         e.preventDefault(); // Detiene el envío del formulario si la CURP no es válida
       }
+    });
+  </script>
+  <script>
+    // Agrega la validación y redirección en el envío del formulario
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault(); // Evita el envío real del formulario
+
+      // Aquí puedes agregar validaciones adicionales si lo requieres
+      
+      // Redirige a mainPaciente.html
+      window.location.href = "mainPaciente.html";
     });
   </script>
 </body>
