@@ -1,4 +1,4 @@
-<!-- login.html -->
+<!-- Inicio de login.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,27 +16,50 @@
     </a>
   </div>
 
-  <!-- Contenedor principal para usar Flexbox -->
   <div class="login-container">
     <h2>Iniciar Sesión</h2>
-    <form id="loginForm" action="#" method="post">
-      <input type="text" placeholder="Usuario" required>
-      <input type="password" placeholder="Contraseña" required>
+    <form id="loginForm" action="../php/login.php" method="post">
+      <input type="text" name="username" placeholder="Usuario (correo)" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
       <button type="submit">Ingresar</button>
       <p>¿No tienes cuenta? <a href="createAccount.html">Crear una cuenta</a></p>
     </form>
+
+    <!-- Aquí se mostrará el mensaje de error -->
+    <p id="errorMsg" style="color: red; font-size: 14px; display: none;"></p>
   </div>
 
   <script>
-    // Agrega la validación y redirección en el envío del formulario
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault(); // Evita el envío real del formulario
+    // Al cargar la página, leer query params y mostrar mensaje si existe "error"
+    (function() {
+      // 1. Obtener los parámetros de la URL
+      const params = new URLSearchParams(window.location.search);
+      const errorCode = params.get('error');  // devuelve "1", "2" o null
 
-      // Aquí puedes agregar validaciones adicionales si lo requieres
-      
-      // Redirige a mainPaciente.html
-      window.location.href = "mainPaciente.html";
-    });
+      if (!errorCode) {
+        return; // no hay error, no hago nada
+      }
+
+      // 2. Mapear códigos a mensajes
+      let mensaje = '';
+      switch (errorCode) {
+        case '1':
+          mensaje = 'Usuario o contraseña incorrectos.';
+          break;
+        case '2':
+          mensaje = 'Por favor, ingresa usuario y contraseña.';
+          break;
+        default:
+          mensaje = 'Ocurrió un error desconocido.';
+      }
+
+      // 3. Inyectar el mensaje dentro del <p id="errorMsg">
+      const errorElem = document.getElementById('errorMsg');
+      errorElem.textContent = mensaje;
+      errorElem.style.display = 'block';
+    })();
   </script>
 </body>
 </html>
+
+<!-- fin de login.html -->

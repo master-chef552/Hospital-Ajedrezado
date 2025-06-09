@@ -1,3 +1,4 @@
+<!-- Inicio de mainPaciente.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +12,9 @@
   <div class="wrapper">
     <!-- Barra de navegación simplificada -->
     <div class="navbar">
-        <a href="mainPaciente.html" class="color"><div class="hospital-name">Hospital Ajedrezado</div></a>
+      <a href="mainPaciente.html" class="color">
+        <div class="hospital-name">Hospital Ajedrezado</div>
+      </a>
       <div class="profile-button">
         <a href="perfilPaciente.html">
           <img src="../imagenes/sesion.png" alt="Perfil">
@@ -26,30 +29,61 @@
 
     <!-- Secciones expansibles -->
     <div class="windows">
+      <!-- ===========================
+           Sección: Ver mis citas
+           =========================== -->
       <div class="expandable-window">
         <div class="window-header">Ver mis citas</div>
-        <div class="window-content">
-          <!-- Aquí puedes incluir detalles o enlaces a la sección de citas -->
-          <p>Aquí se muestran tus citas programadas.</p>
+        <div class="window-content" id="citasContainer">
+          <!-- Aquí se cargará dinámicamente la tabla de citas -->
+          <p>Cargando tus citas…</p>
         </div>
       </div>
 
+      <!-- ==================================
+           Sección: Agendar nuevas citas
+           ================================== -->
       <div class="expandable-window">
         <div class="window-header">Agendar nuevas citas</div>
         <div class="window-content">
-          <!-- Aquí puedes incluir el formulario o enlaces para agendar citas -->
-          <p>Aquí puedes agendar nuevas citas.</p>
+          <form id="agendarCitaForm" action="../php/agendarCita.php" method="post">
+            <!-- Selección de especialidad -->
+<label for="especialidadSelect">Selecciona especialidad:</label>
+<select id="especialidadSelect" required>
+  <option value="">-- Elige una especialidad --</option>
+</select>
+
+<!-- Selección de doctor (se llena según la especialidad) -->
+<label for="doctorSelect">Selecciona doctor:</label>
+<select name="id_doctor" id="doctorSelect" required disabled>
+  <option value="">-- Primero selecciona especialidad --</option>
+</select>
+
+            <!-- Fecha (mínimo 48h adelante, máximo 3 meses) -->
+            <label for="fechaCita">Fecha de la cita:</label>
+            <input type="date" id="fechaCita" name="fecha_cita" required>
+
+            <!-- Hora -->
+            <label for="horaCita">Hora de la cita:</label>
+            <input type="time" id="horaCita" name="hora_cita" required>
+
+            <button type="submit">Solicitar cita</button>
+
+            <!-- Aquí aparecerá un posible mensaje de error si viene en ?error=… -->
+            <p id="errorServidor" style="color: red; font-size: 14px; display: none;"></p>
+          </form>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Script para expandir o contraer el contenido de las ventanas al hacer clic en el encabezado
+    // ---------------------------------------
+    // 1) Expandir/colapsar las ventanas
+    // ---------------------------------------
     document.querySelectorAll('.expandable-window .window-header').forEach(header => {
       header.addEventListener('click', () => {
         const content = header.nextElementSibling;
-        // Si ya está expandido, contrae; de lo contrario, expande
         if (content.style.maxHeight && content.style.maxHeight !== "0px") {
           content.style.maxHeight = "0px";
         } else {
@@ -57,6 +91,182 @@
         }
       });
     });
+
+    // ================================================
+    // 2) Función auxiliar para formatear fecha a YYYY-MM-DD
+    // ================================================
+    function formateaFecha(d) {
+      const yyyy = d.getFullYear();
+      let mm = d.getMonth() + 1; // Mes empieza en 0
+      let dd = d.getDate();
+      if (mm < 10) mm = '0' + mm;
+      if (dd < 10) dd = '0' + dd;
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // ====================================================================
+    // 3) Definir rango mínimo (48h) y máximo (3 meses) para el input date
+    // ====================================================================
+    (function() {
+      const fechaInput = document.getElementById('fechaCita');
+      if (!fechaInput) return;
+
+      const ahora     = new Date();
+      const limiteMin = new Date(ahora.getTime() + 48 * 60 * 60 * 1000);
+      const limiteMax = new Date();
+      limiteMax.setMonth(limiteMax.getMonth() + 3);
+
+      fechaInput.setAttribute('min', formateaFecha(limiteMin));
+      fechaInput.setAttribute('max', formateaFecha(limiteMax));
+
+      document.getElementById('agendarCitaForm').addEventListener('submit', function(e) {
+        const seleccion = fechaInput.value;
+        if (!seleccion) return;  // required se encarga
+        const fechaElegida = new Date(seleccion);
+        fechaElegida.setHours(0,0,0,0);
+
+        const minDate = new Date(fechaInput.getAttribute('min'));
+        const maxDate = new Date(fechaInput.getAttribute('max'));
+
+        if (fechaElegida < minDate || fechaElegida > maxDate) {
+          e.preventDefault();
+          alert("La fecha debe ser como mínimo 48 hrs después y como máximo 3 meses desde hoy.");
+        }
+      });
+    })();
+
+    // =====================================================
+    // 4) Leer parámetro “error” de la URL y mostrar mensaje
+    // =====================================================
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const errorCode = params.get('error');
+      if (!errorCode) return;
+      const errElem = document.getElementById('errorServidor');
+      let mensaje = '';
+      switch (errorCode) {
+        case '1':
+          mensaje = 'Debes seleccionar un doctor.';
+          break;
+        case '2':
+          mensaje = 'La fecha seleccionada no cumple con 48 hrs de anticipación y 3 meses de límite.';
+          break;
+        case '3':
+          mensaje = 'Horario inválido (fuera del horario laboral).';
+          break;
+        case '4':
+          mensaje = 'Ya tienes una cita pendiente con este doctor.';
+          break;
+        case '5':
+          mensaje = 'El doctor ya está ocupado en la fecha/hora elegida.';
+          break;
+        default:
+          mensaje = 'Error desconocido al intentar agendar.';
+      }
+      errElem.textContent = mensaje;
+      errElem.style.display = 'block';
+    })();
+
+    // ================================================
+    // 5) Función para generar la tabla de citas
+    // ================================================
+    function mostrarCitas(citas) {
+      const container = document.getElementById('citasContainer');
+      if (!citas || citas.length === 0) {
+        container.innerHTML = "<p>No tienes citas registradas.</p>";
+        return;
+      }
+
+      // Construir tabla
+      let html = `
+        <table class="citas-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Doctor</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Estatus</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      citas.forEach(cita => {
+        html += `
+          <tr>
+            <td>${cita.id_cita}</td>
+            <td>${cita.nombre_doctor}</td>
+            <td>${cita.fecha}</td>
+            <td>${cita.hora}</td>
+            <td>${cita.estatus}</td>
+          </tr>
+        `;
+      });
+      html += `
+          </tbody>
+        </table>
+      `;
+      container.innerHTML = html;
+    }
+
+    // ==================================================
+    // 6) Función para cargar citas vía AJAX (getCitas.php)
+    // ==================================================
+    function cargarCitas() {
+      fetch('../php/getCitas.php', {
+        method: 'GET',
+        credentials: 'include' // para enviar cookie de sesión
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Error al obtener citas");
+        return response.json();
+      })
+      .then(data => {
+        mostrarCitas(data);
+      })
+      .catch(err => {
+        document.getElementById('citasContainer').innerHTML = `<p style="color:red;">${err.message}</p>`;
+      });
+    }
+
+    // ===================================================
+    // 7) Función para llenar el select de doctores (getDoctores.php)
+    // ===================================================
+    function cargarDoctores() {
+      fetch('../php/getDoctores.php', {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Error al obtener lista de doctores");
+        return response.json();
+      })
+      .then(data => {
+        const select = document.getElementById('doctorSelect');
+        data.forEach(doc => {
+          const opt = document.createElement('option');
+          opt.value = doc.id_doctor;
+          opt.textContent = doc.nombre_doctor;
+          select.appendChild(opt);
+        });
+      })
+      .catch(err => {
+        const select = document.getElementById('doctorSelect');
+        select.innerHTML = `<option value="">Error cargando doctores</option>`;
+        console.error(err);
+      });
+    }
+
+    // ================================================
+    // 8) Al cargar la página, solicitamos datos
+    // ================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      cargarCitas();
+      cargarDoctores();
+    });
   </script>
 </body>
 </html>
+
+
+<!-- fin de mainPaciente.html -->

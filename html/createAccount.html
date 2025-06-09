@@ -1,68 +1,88 @@
-<!-- createAccount.html --> 
+<!-- Inicio de createAccount.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/createAccount.css">
-  <title>Crear Cuenta</title>
+  <title>Crear Cuenta - Paciente</title>
   <link rel="icon" href="../imagenes/kaguyafondo.jpg" type="image/png">
 </head>
 
-
 <body>
- <!-- Barra de navegación simplificada -->
- <div class="navbar">
-  <a href="main.html" class="color"><div class="hospital-name">Hospital Ajedrezado</div></a>
-</div>
+  <!-- Barra de navegación simplificada -->
+  <div class="navbar">
+    <a href="main.html" class="color">
+      <div class="hospital-name">Hospital Ajedrezado</div>
+    </a>
+  </div>
 
   <div class="register-container">
     <h2>Crear Cuenta</h2>
-    <form action="#" method="post" id="registerForm">
-      <input type="text" name="nombre" placeholder="Nombre completo" required>
-      <input type="email" name="correo" placeholder="Correo electrónico" required>
+    <form action="..\php\registro.php" method="post" id="registerForm">
+      <!-- DNI -->
+      <input type="text" name="dni" placeholder="DNI" required>
+
+      <!-- Nombres y Apellidos separados -->
+      <input type="text" name="nombres" placeholder="Nombres" required>
+      <input type="text" name="apellidos" placeholder="Apellidos" required>
+
+      <!-- CURP -->
+      <input type="text" name="curp" placeholder="CURP" maxlength="18" required>
+
+      <!-- Fecha de Nacimiento -->
+      <input type="date" name="fechaNacimiento" id="fechaNacimiento" required>
+
+      <!-- Domicilio y Teléfono -->
+      <input type="text" name="domicilio" placeholder="Domicilio" required>
+      <input type="text" name="telefono" placeholder="Teléfono" required>
+
+      <!-- Correo Electrónico (usado como username) -->
+      <input type="email" name="email" placeholder="Correo electrónico" required>
+
+      <!-- Contraseña y Confirmar -->
       <input type="password" name="contrasena" placeholder="Contraseña" required>
       <input type="password" name="confirmarContrasena" placeholder="Confirmar contraseña" required>
-      <input type="text" name="curp" placeholder="CURP" required>
-      <input type="date" name="fechaNacimiento" id="fechaNacimiento" placeholder="Fecha de Nacimiento" required>
+
       <button type="submit">Registrarse</button>
       <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
     </form>
   </div>
-  
+
   <script>
     // Establece la fecha máxima para el campo de fecha de nacimiento como la fecha actual
     const fechaNacimiento = document.getElementById('fechaNacimiento');
     const hoy = new Date().toISOString().split('T')[0];
     fechaNacimiento.setAttribute('max', hoy);
 
-    // Función que valida la CURP usando la expresión regular corregida
+    // Función que valida la CURP usando la expresión regular
     function validarCURP(curp) {
       const regexCURP = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[0-9A-Z][0-9]$/;
       return regexCURP.test(curp);
     }
 
-    // Agrega la validación al envío del formulario
+    // Validación al enviar el formulario
     document.getElementById('registerForm').addEventListener('submit', function (e) {
       const curpInput = document.querySelector("input[name='curp']").value.trim().toUpperCase();
-      
+      const pass = document.querySelector("input[name='contrasena']").value;
+      const confirmPass = document.querySelector("input[name='confirmarContrasena']").value;
+
+      // Verifica CURP
       if (!validarCURP(curpInput)) {
         alert("CURP no válida. Verifica tus datos.");
-        e.preventDefault(); // Detiene el envío del formulario si la CURP no es válida
+        e.preventDefault();
+        return;
       }
-    });
-  </script>
-  <script>
-    // Agrega la validación y redirección en el envío del formulario
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault(); // Evita el envío real del formulario
 
-      // Aquí puedes agregar validaciones adicionales si lo requieres
-      
-      // Redirige a mainPaciente.html
-      window.location.href = "mainPaciente.html";
+      // Verifica contraseñas coincidentes
+      if (pass !== confirmPass) {
+        alert("Las contraseñas no coinciden.");
+        e.preventDefault();
+        return;
+      }
     });
   </script>
 </body>
 </html>
 
+<!-- fin de createAccount.html -->
