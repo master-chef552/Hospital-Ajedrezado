@@ -12,11 +12,15 @@ $action = $_GET['action'] ?? '';
 // --- Endpoint: Lista de especialidades ---
 if ($action === 'getEspecialidades') {
     header('Content-Type: application/json; charset=UTF-8');
-    $tsql = "SELECT id_especialidad, nombre FROM especialidad ORDER BY nombre";
+    $tsql = "SELECT id_especialidad, especialidad AS nombre
+             FROM especialidad
+             ORDER BY especialidad";
     $stmt = sqlsrv_query($conn, $tsql);
     $out = [];
-    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $out[] = $row;
+    if ($stmt) {
+      while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+          $out[] = $row;
+      }
     }
     echo json_encode($out);
     exit;
@@ -27,15 +31,24 @@ if ($action === 'getDoctores') {
     header('Content-Type: application/json; charset=UTF-8');
     $id_esp = intval($_GET['id_especialidad'] ?? 0);
     if (!$id_esp) { echo json_encode([]); exit; }
+
     $tsql = "
-        SELECT m.id_medico,
-               e.nombre + ' ' + e.apellidos AS nombre
+        SELECT
+               m.id_medico,
+               e.nombre + ' ' + e.apellido_paterno + ' ' + e.apellido_materno AS nombre
         FROM medico m
-        JOIN empleado e ON m.id_empleado = e.id_empleado
-        WHERE m.id_especialidad = ?
-        ORDER BY e.nombre
+        JOIN medicoespecialidad me 
+          ON m.id_medico = me.id_medico
+        JOIN empleado e 
+          ON m.id_empleado = e.id_empleado
+        WHERE me.id_especialidad = ?
+        ORDER BY nombre
     ";
     $stmt = sqlsrv_query($conn, $tsql, [$id_esp]);
+    if ($stmt === false) {
+        echo json_encode(sqlsrv_errors(), JSON_PRETTY_PRINT);
+        exit;
+    }
     $out = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $out[] = $row;
@@ -43,6 +56,9 @@ if ($action === 'getDoctores') {
     echo json_encode($out);
     exit;
 }
+
+
+
 
 // --- Endpoint: Citas del paciente en sesión ---
 if ($action === 'getCitas') {
