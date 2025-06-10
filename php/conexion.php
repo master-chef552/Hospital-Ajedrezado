@@ -1,22 +1,30 @@
 <?php
-//inicio de php conexion.php
-$serverName = "SRUFACE_DE_NICO\SQLEXPRESS"; // o "localhost", según tu configuración
+// Sin BOM ni líneas en blanco antes de esta línea
+
+// Opcional: ocultar warnings/notices
+ini_set('display_errors', '0');
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+
+// Datos de conexión
+$serverName = "SRUFACE_DE_NICO\\SQLEXPRESS";
 $connectionOptions = [
-    "Database" => "IPN_MEDICAL_CENTER",
-    "Uid" => "nicolas",
-    "PWD" => "durango45!",
+    "Database"     => "IPN_MEDICAL_CENTER",
+    "Uid"          => "nicolas",
+    "PWD"          => "durango45!",
     "CharacterSet" => "UTF-8"
 ];
 
 // Conectar
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 
-// Verificar conexión
-if ($conn) {
-    echo "✅ Conexión exitosa a SQL Server.";
-} else {
-    echo "❌ Error en la conexión:<br>";
-    die(print_r(sqlsrv_errors(), true));
+if (!$conn) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'error'   => 'Error de conexión a la base de datos',
+        'details' => sqlsrv_errors()
+    ]);
+    exit;
 }
-//fin de php conexion.php
-?>
+
+// No imprimir nada en caso de éxito
