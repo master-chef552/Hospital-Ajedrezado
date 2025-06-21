@@ -1,0 +1,134 @@
+/*inicio mainDocot.css*/
+/* Reset y configuración general */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 15px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.hospital-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.profile-button {
+  flex-shrink: 0;
+}
+
+.profile-button img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Elimina subrayado en enlaces con clase .color */
+.color {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Bienvenida */
+.welcome {
+  margin-top: 40px;
+  text-align: center;
+  padding: 20px;
+}
+
+.welcome h1 {
+  font-size: 48px;
+  color: #007BFF;
+}
+
+
+.agenda{    
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border-radius: 25px;
+  background-color: rgb(255, 255, 255);
+ 
+}
+
+.agenda-citasDatos{
+     display: flex;
+  gap: 20px;
+}
+.agenda h3 {
+  color: #007BFF;
+  text-align: left;
+}
+
+.agenda p {
+  font-size: 20px;
+  color: #007BFF;
+  text-align: left;
+}
+
+.agenda-citas {
+    width: 250px;
+    height: 150px;
+    padding-left: 20px;
+    padding-right: 450px;
+    padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.agenda-datos {
+    width: 180px;
+    height: 150px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+ padding-left: 20px;
+    padding-right: 500px;
+    padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+   
+}
+
+.agenda-footer {
+  display: flex;
+  gap: 20px;
+  justify-content: right;
+  padding: 10px;
+  padding-right: 20px;
+}
+
+
+.disenio{
+    display: flex;
+    color: #FFFFFF;
+    background-color: #007BFF;
+    border: 3px solid #007BFF;
+    border-radius: 2px;
+}
+/*fin mainDoctor.css*/

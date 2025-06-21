@@ -4,13 +4,12 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-}
-
-body {
+  font-family: Arial, sans-serif;
   background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
   background-size: cover;
-  font-family: Arial, sans-serif;
+  overflow-x: hidden;    /* evita scroll horizontal */
 }
+
 
 /* Color */
 .color {
@@ -31,19 +30,36 @@ body {
   color: #fff;
   padding: 15px 20px;
   position: fixed;
-  width: 100%;
   top: 0;
   left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   z-index: 10;
 }
 
+/* Nombre del hospital con límite de ancho */
 .hospital-name {
   font-size: 24px;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+/* Botón de perfil */
+.profile-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  margin-right: 50px;
+  min-width: 50px;     /* asegura espacio mínimo */
+  flex-shrink: 0;
 }
 
 .profile-button img {
@@ -114,16 +130,19 @@ body {
   border-collapse: separate;
   border-spacing: 0 8px;
 }
+
 .panel-body .citas-table th,
 .panel-body .citas-table td {
   background: #f9f9f9;
   padding: 0.75rem 1rem;
   text-align: left;
 }
+
 .panel-body .citas-table th {
   background: #e9ecef;
   font-weight: 600;
 }
+
 .panel-body .citas-table tr:last-child td {
   border-bottom: none;
 }
@@ -132,6 +151,7 @@ body {
 .panel-body form .form-group {
   margin-bottom: 1rem;
 }
+
 .panel-body form .form-group input,
 .panel-body form .form-group select {
   width: 100%;
@@ -140,6 +160,7 @@ body {
   border-radius: 6px;
   transition: border-color 0.2s;
 }
+
 .panel-body form .form-group input:focus,
 .panel-body form .form-group select:focus {
   border-color: #007bff;
@@ -157,6 +178,7 @@ body {
   font-weight: 600;
   transition: background 0.2s;
 }
+
 .panel-body form button[type="submit"]:hover {
   background: #0056b3;
 }
@@ -169,7 +191,16 @@ body {
 }
 
 /* Ajustes responsivos */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+  .navbar {
+    padding: 10px 12px;
+  }
+
+  .hospital-name {
+    font-size: 18px;
+    max-width: 65%;
+  }
+
   .profile-button img {
     width: 30px;
     height: 30px;
