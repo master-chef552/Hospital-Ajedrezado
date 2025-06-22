@@ -131,4 +131,36 @@ html, body {
     border: 3px solid #007BFF;
     border-radius: 2px;
 }
+
+.historialPaciente{
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border-radius: 25px;
+  background-color: rgb(255, 255, 255);
+}
+
+.historialPaciente h3 {
+  color: #007BFF;
+  text-align: left;
+}
+
+
+.infoPaciente {
+  width: 1350px;
+  height: 200px;
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: #000000 1px solid;
+  border-radius: 10px;
+}
+
+
+
 /*fin mainDoctor.css*/

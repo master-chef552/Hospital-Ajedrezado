@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard - Hospital Ajedrezado</title>
+  <title>Hospital Ajedrezado</title>
   <link rel="icon" href="../imagenes/hospital-icon.png" type="image/png">
   <link rel="stylesheet" href="../css/mainDoctor.css">
 </head>
 <body>
-  <div class="wrapper">
+  
+
     <!-- Navbar -->
     <div class="navbar">
       <a href="mainDoctor.html" class="color">
@@ -26,35 +27,38 @@
       <h1>Bienvenido</h1>
     </div>
 
-    <!-- Div agenda -->
+    <!-- Agenda -->
     <div class="agenda">
       <h3>Agenda</h3>
-      <div class="agenda-citasDatos">
-        
-        <div class="agenda-citas">
-            <p>Citas</p>
-            <!-- Aquí puedes agregar una lista de las citas -->
-    </div>
-    
-        
-         <div class="agenda-datos">
-            <p>Datos</p>
-            <!-- cuando se selecciona una cita aqui aparecen los datos de la cita -->
-    </div> 
-      
-         </div>
 
-         <div class="agenda-footer">
-          <button class="disenio">Solicitar cancelacion</button>
-          <button class="disenio">Atender cita</button>
+      <div class="agenda-citasDatos">
+        <div class="agenda-citas">
+          <p>Citas</p>
         </div>
 
-
+        <div class="agenda-datos">
+          <p>Datos</p>
+        </div>
       </div>
-      <!-- fin del div agenda -->
-    </div>
-  </div>
 
- 
+      <div class="agenda-footer">
+        <button class="disenio" onclick="alert('Se a enviado la solicitud de cancelacion')">Solicitar cancelacion</button>                        <!--luego cambiar este boton-->
+        <a href="atender.html"><button class="disenio">Atender cita</button> </a>          <!--luego cambiar este boton-->
+      </div>
+    </div> <!-- fin del div .agenda -->
+
+
+
+    <!-- Historial del paciente -->
+    <div class="historialPaciente">
+      <h3>Historial del paciente</h3>
+      <div class="infoPaciente">
+        <!-- Información del paciente -->
+      </div>
+      
+    </div>
+
+
+    
 </body>
 </html>
