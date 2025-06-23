@@ -1,12 +1,13 @@
 <?php
-// inicio de php registro
-// registro.php
+// inicio de registro.php
 
 // 1) Incluir el archivo de conexión: deja disponible $conn (recurso SQLSRV)
-require_once __DIR__ . "/conexion.php";
+require_once __DIR__ . "/conexion.ph
+p";
 
 // 2) Asegurarnos de que llegó por POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     // 3) Recoger y sanitizar datos del formulario
     $dni             = strtoupper(trim($_POST['dni'] ?? ""));
     $nombres         = ucwords(strtolower(trim($_POST['nombres'] ?? "")));
@@ -18,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email           = strtolower(trim($_POST['email'] ?? ""));
     $password        = $_POST['contrasena'] ?? "";
     $confirmPassword = $_POST['confirmarContrasena'] ?? "";
+
 
     // 4) Validaciones básicas
     if (
@@ -38,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         WHERE CURP = ? OR dni = ?
     ";
     $paramsCheck = [ $curp, $dni ];
+    
     $stmtCheck = sqlsrv_query($conn, $sqlCheck, $paramsCheck);
     if ($stmtCheck === false) {
         die("Error al verificar CURP/DNI: " . print_r(sqlsrv_errors(), true));
@@ -138,6 +141,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         sqlsrv_rollback($conn);
         die("⚠️ Transacción cancelada: " . $e->getMessage());
     }
+
+
 } else {
     // Si no es POST, redirigimos al formulario
     header("Location: ../html/createAccount.html");
