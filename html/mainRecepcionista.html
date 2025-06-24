@@ -9,29 +9,161 @@
 </head>
 <body>
   
-
-    <!-- Navbar -->
-    <div class="navbar">
-      <a href="mainDoctor.html" class="color">
-        <div class="hospital-name">Hospital Ajedrezado</div>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="mainRecepcionista.html" class="color">
+      <div class="hospital-name">Hospital Ajedrezado</div>
+    </a>
+    <div class="profile-button">
+      <a href="perfilDoc.html">
+        <img src="../imagenes/sesion.png" alt="Perfil">
       </a>
-      <div class="profile-button">
-        <a href="perfilDoc.html">
-          <img src="../imagenes/sesion.png" alt="Perfil">
-        </a>
+    </div>
+  </div>
+
+  <!-- Bienvenida -->
+  <div class="welcome">
+    <h1>Bienvenido al sistema de Recepcionista</h1>
+  </div>
+
+  <div class="creaPerfil">
+    <h4>Cree un perfil</h4>
+
+    <!-- Primera fila: tipo de usuario y datos básicos -->
+    <div class="fila">
+      <div class="caja">  
+        <h5>Tipo de usuario</h5>
+        <select id="tipoUsuario">
+          <option value="paciente">Paciente</option>
+          <option value="doctor">Empleado</option>
+        </select>
+      </div>
+      <div class="caja">  
+        <h5>Nombre</h5>
+        <input type="text" id="nombre" placeholder="Ingrese el nombre">
+      </div>
+      <div class="caja">
+        <h5>Apellido Paterno</h5>
+        <input type="text" id="apellidoPaterno" placeholder="Ingrese el apellido paterno">
+      </div>
+      <div class="caja">
+        <h5>Apellido Materno</h5>
+        <input type="text" id="apellidoMaterno" placeholder="Ingrese el apellido materno">
+      </div>
+      <div class="caja">
+        <h5>Fecha de Nacimiento</h5>
+        <input type="date" id="fechaDeNacimiento">
       </div>
     </div>
 
-    <!-- Bienvenida -->
-    <div class="welcome">
-      <h1>Bienvenido al sistema de Recepcionista</h1>
+    <!-- Segunda fila: contacto y credenciales -->
+    <div class="fila">
+      <div class="caja">
+        <h5>Teléfono</h5>
+        <input type="tel" id="telefono" placeholder="Ingrese el teléfono">
+      </div>
+      <div class="caja">
+        <h5>Nombre de Usuario</h5>
+        <input type="text" id="nombreDeUsuario" placeholder="Ingrese el nombre de usuario">
+      </div>
+      <div class="caja">
+        <h5>Correo Electrónico</h5>
+        <input type="email" id="correo" placeholder="Ingrese el correo">
+      </div>
+      <div class="caja">
+        <h5>Contraseña</h5>
+        <input type="password" id="contrasena" placeholder="Ingrese la contraseña">
+      </div>
+      <div class="caja">
+        <h5>Confirmar contraseña</h5>
+        <input type="password" id="contrasena2" placeholder="Confirme la contraseña">
+      </div>
     </div>
 
+    <!-- Tercera fila: tipo de empleado (inicialmente oculto) -->
+    <div class="fila">
+      <div class="caja" id="cont-tipoEmpleado" style="display: none;">
+        <h5>¿Qué tipo de empleado?</h5>
+        <select id="tipoEmpleado">
+          <option value="">-- Seleccione --</option>
+          <option value="Recepcionista">Recepcionista</option>
+          <option value="Doctor">Doctor</option>
+        </select>
+      </div>
+      <div class="caja" id="cont-especialidad" style="display: none;">
+        <h5>¿Qué especialidad?</h5>
+        <select id="especialidad">
+          <option value="">-- Seleccione --</option>
+          <option value="Cardiologia">Cardiología</option>
+          <option value="Dermatologia">Dermatología</option>
+          <option value="Ginecologia">Ginecología</option>
+          <option value="MedicinaGeneral">Medicina General</option>
+          <option value="Nefrologia">Nefrología</option>
+          <option value="Nutriologia">Nutriología</option>
+          <option value="Oftalmologia">Oftalmología</option>
+          <option value="Oncologia">Oncología</option>
+          <option value="Ortopedia">Ortopedia</option>
+          <option value="Pediatra">Pediatría</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fila">
+        <button class="boton">Crear Perfil</button>
+    </div>
+
+  </div>
+  <div class="funcionExtraP">
+    <div class="funcionExtra">
+      <h4>Agendar una cita</h4>
+      <a href="agendar.html"><button class="boton">Agendar</button></a>
+    </div>
+    <div class="funcionExtra">
+      <h4>Cancelar una cita</h4>
+      <a href="cancelar.html"><button class="boton">Cancelar</button></a>
+    </div>
+    <div class="funcionExtra">
+      <h4>Cobrar medicamentos</h4>
+      <a href="cobrar.html"><button class="boton">Cobrar</button></a>
+    </div>
+  </div>
 
 
-   
+  
 
 
-    
+
+
+
+  
+
+  <script>
+    const tipoUsuario = document.getElementById('tipoUsuario');
+    const contTipoEmp = document.getElementById('cont-tipoEmpleado');
+    const tipoEmpleado = document.getElementById('tipoEmpleado');
+    const contEsp = document.getElementById('cont-especialidad');
+
+    // Mostrar/ocultar "¿Qué tipo de empleado?"
+    tipoUsuario.addEventListener('change', () => {
+      if (tipoUsuario.value === 'doctor') {
+        contTipoEmp.style.display = 'flex';
+      } else {
+        contTipoEmp.style.display = 'none';
+        // ocultar también especialidad en caso de cambio atrás
+        contEsp.style.display = 'none';
+        tipoEmpleado.value = '';
+      }
+    });
+
+    // Mostrar/ocultar "¿Qué especialidad?"
+    tipoEmpleado.addEventListener('change', () => {
+      if (tipoEmpleado.value === 'Doctor') {
+        contEsp.style.display = 'flex';
+      } else {
+        contEsp.style.display = 'none';
+      }
+    });
+  </script>
+
 </body>
 </html>

@@ -61,6 +61,108 @@ html, body {
 }
 
 
+.recetas{
+  width: 1400px;
+  height: 700px;
+  margin: auto;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border-radius: 25px;
+  background-color: rgb(255, 255, 255);
+}
+
+
+.recetas h3 {
+  color: #007BFF;
+  
+}
+
+.diagnostico {
+  width: 1300px;
+  height: 120px;
+  margin: auto;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border: #000000 1px solid;
+  border-radius: 25px;
+}
+
+
+.medicamento{
+  width: 1300px;
+  height: 200px;
+  margin: auto;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border: #000000 1px solid;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.medicamento h4 {
+  color: #007BFF;
+}
+
+.nombreMedicamento {
+  width: 350px;
+  height: 100px;
+  margin: left auto;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border: #000000 1px solid;
+  border-radius: 15px;
+}
+
+.dosisMedicamento {
+  width: 350px;
+  height: 100px;
+  margin: left auto;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border: #000000 1px solid;
+  border-radius: 15px;
+}
+
+.observaciones{
+  width: 1300px;
+  height: 120px;
+  margin: auto;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  border: #000000 1px solid;
+  border-radius: 25px;
+}
+
+
+.btn-fin{
+  color: white;
+  margin-top: 10px;
+  background-color: #007BFF;
+  border: #007BFF 2px solid;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 1200px;
+}
+
+
+
+
 
 
 

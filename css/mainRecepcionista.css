@@ -1,4 +1,4 @@
-/*inicio atender.css*/
+/*inicio mainRecepcionista.css*/
 html, body {
   margin: 0;
   padding: 0;
@@ -61,7 +61,72 @@ html, body {
 }
 
 
+.creaPerfil{
+  width: 1400px;
+  height: 430px;
+  margin: auto;
+  margin-bottom: 20px;
+  padding-left: 15px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 10px;
+  border-radius: 25px;
+  background-color: rgb(255, 255, 255);
+}
+
+.creaPerfil h4 {
+  color: #007BFF;
+}
 
 
+.fila{
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  margin-left: 10px;
 
-/*fin atender.css*/
+}
+
+.caja{
+  display: flex;
+  margin-right: 20px;
+}
+
+.boton{
+   color: rgb(255, 255, 255);
+  margin-top: 10px;
+  background-color: #007BFF;
+  border: #007BFF 2px solid;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  align-items: center;
+}
+
+.funcionExtraP{
+  margin-top: 10px;
+  margin: auto;
+   width: 1400px;
+  height: 200px;
+  border-radius: 15px;
+  background-color: #ffffffc6;
+  display: flex;
+}
+
+
+.funcionExtra {
+  margin:35px;
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  align-items: center;     /* centra horizontalmente */
+  justify-content: space-between;
+}
+.funcionExtra h4 {
+  color: #007BFF;
+  text-align: center;
+}
+
+/*fin mainRecepcionista.css*/

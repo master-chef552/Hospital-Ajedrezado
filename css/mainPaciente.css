@@ -7,11 +7,10 @@ html, body {
   font-family: Arial, sans-serif;
   background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
   background-size: cover;
-  overflow-x: hidden;    /* evita scroll horizontal */
 }
 
 
-/* Color */
+/* Elimina subrayado en enlaces con clase .color */
 .color {
   text-decoration: none;
   color: inherit;
@@ -24,7 +23,7 @@ html, body {
   min-height: 100vh;
 }
 
-/* Navbar */
+/* Barra de navegación */
 .navbar {
   background-color: #007BFF;
   color: #fff;
@@ -41,24 +40,12 @@ html, body {
   z-index: 10;
 }
 
-/* Nombre del hospital con límite de ancho */
 .hospital-name {
   font-size: 24px;
   font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 70%;
 }
 
-/* Botón de perfil */
 .profile-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  margin-right: 50px;
-  min-width: 50px;     /* asegura espacio mínimo */
   flex-shrink: 0;
 }
 
@@ -190,20 +177,5 @@ html, body {
   color: #d9534f;
 }
 
-/* Ajustes responsivos */
-@media (max-width: 600px) {
-  .navbar {
-    padding: 10px 12px;
-  }
 
-  .hospital-name {
-    font-size: 18px;
-    max-width: 65%;
-  }
-
-  .profile-button img {
-    width: 30px;
-    height: 30px;
-  }
-}
 /* fin mainPaciente.css */
