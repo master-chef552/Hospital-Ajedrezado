@@ -6,7 +6,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 // Datos de conexión
 $serverName = "SRUFACE_DE_NICO\\SQLEXPRESS";
 $connectionOptions = [
-    "Database"     => "IPN_MEDICAL_CENTER",
+    "Database"     => "ipn_prueba",
     "Uid"          => "nicolas",
     "PWD"          => "durango45!",
     "CharacterSet" => "UTF-8"

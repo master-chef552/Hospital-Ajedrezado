@@ -10,7 +10,6 @@
 </head>
 
 <body>
-  <!-- Barra de navegación simplificada -->
   <div class="navbar">
     <a href="main.html" class="color">
       <div class="hospital-name">Hospital Ajedrezado</div>
@@ -19,30 +18,26 @@
 
   <div class="register-container">
     <h2>Crear Cuenta</h2>
-    <form action="..\php\registro.php" method="post" id="registerForm">
-      <!-- DNI -->
-      <input type="text" name="dni" placeholder="DNI" required>
+    <form action="../php/registro.php" method="post" id="registerForm">
+      <!-- Nombres y Apellidos (separamos paterno y materno) -->
+      <input type="text" name="nombre" placeholder="Nombre(s)" required>
+      <input type="text" name="ap_paterno" placeholder="Apellido Paterno" required>
+      <input type="text" name="ap_materno" placeholder="Apellido Materno" required>
 
-      <!-- Nombres y Apellidos separados -->
-      <input type="text" name="nombres" placeholder="Nombres" required>
-      <input type="text" name="apellidos" placeholder="Apellidos" required>
-
-      <!-- CURP -->
-      <input type="text" name="curp" placeholder="CURP" maxlength="18" required>
-
-      <!-- Fecha de Nacimiento -->
-      <input type="date" name="fechaNacimiento" id="fechaNacimiento" required>
-
-      <!-- Domicilio y Teléfono -->
-      <input type="text" name="domicilio" placeholder="Domicilio" required>
+      <!-- Fecha de Nacimiento y Teléfono -->
+      <input type="date" name="fecha_nacimiento" id="fechaNacimiento" required>
       <input type="text" name="telefono" placeholder="Teléfono" required>
 
-      <!-- Correo Electrónico (usado como username) -->
-      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <!-- Correo y usuario -->
+      <input type="email" name="correo" placeholder="Correo electrónico" required>
+      <input type="hidden" name="nombre_usuario" value="">
 
       <!-- Contraseña y Confirmar -->
       <input type="password" name="contrasena" placeholder="Contraseña" required>
       <input type="password" name="confirmarContrasena" placeholder="Confirmar contraseña" required>
+
+      <!-- Forzamos tipo de usuario = 1 -->
+      <input type="hidden" name="id_tipo_usuario" value="1">
 
       <button type="submit">Registrarse</button>
       <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
@@ -50,39 +45,25 @@
   </div>
 
   <script>
-    // Establece la fecha máxima para el campo de fecha de nacimiento como la fecha actual
+    // Fecha máxima = hoy
     const fechaNacimiento = document.getElementById('fechaNacimiento');
     const hoy = new Date().toISOString().split('T')[0];
     fechaNacimiento.setAttribute('max', hoy);
 
-    // Función que valida la CURP usando la expresión regular
-    function validarCURP(curp) {
-      const regexCURP = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[0-9A-Z][0-9]$/;
-      return regexCURP.test(curp);
-    }
-
-    // Validación al enviar el formulario
-    document.getElementById('registerForm').addEventListener('submit', function (e) {
-      const curpInput = document.querySelector("input[name='curp']").value.trim().toUpperCase();
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
       const pass = document.querySelector("input[name='contrasena']").value;
       const confirmPass = document.querySelector("input[name='confirmarContrasena']").value;
-
-      // Verifica CURP
-      if (!validarCURP(curpInput)) {
-        alert("CURP no válida. Verifica tus datos.");
-        e.preventDefault();
-        return;
-      }
-
-      // Verifica contraseñas coincidentes
       if (pass !== confirmPass) {
         alert("Las contraseñas no coinciden.");
         e.preventDefault();
         return;
       }
+      // Usamos el correo como nombre de usuario
+      document.querySelector("input[name='nombre_usuario']").value =
+        document.querySelector("input[name='correo']").value.trim().toLowerCase();
     });
   </script>
 </body>
 </html>
-
 <!-- fin de createAccount.html -->
+

@@ -1,54 +1,54 @@
 <?php
-// mainPaciente.php — endpoints para AJAX y procesar formulario
-ini_set('display_errors', 0);
-error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 session_start();
-
-// 1) Incluir el archivo de conexión, de modo que $conn sea un recurso SQLSRV.
 require_once __DIR__ . "/conexion.php"; 
 
 $action = $_GET['action'] ?? '';
 
-// --- Endpoint: Lista de especialidades ---
+// --- Obtener especialidades ---
 if ($action === 'getEspecialidades') {
     header('Content-Type: application/json; charset=UTF-8');
-    $tsql = "SELECT id_especialidad, especialidad AS nombre
-             FROM especialidad
-             ORDER BY especialidad";
-    $stmt = sqlsrv_query($conn, $tsql);
+    $sql = "SELECT id_especialidad, nombre_especialidad AS nombre FROM especialidad ORDER BY nombre";
+    $stmt = sqlsrv_query($conn, $sql);
     $out = [];
-    if ($stmt) {
-      while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-          $out[] = $row;
-      }
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $out[] = $row;
     }
     echo json_encode($out);
     exit;
 }
 
-// --- Endpoint: Doctores por especialidad ---
+// --- Obtener doctores por especialidad ---
 if ($action === 'getDoctores') {
     header('Content-Type: application/json; charset=UTF-8');
     $id_esp = intval($_GET['id_especialidad'] ?? 0);
     if (!$id_esp) { echo json_encode([]); exit; }
 
-    $tsql = "
-        SELECT
-               m.id_medico,
-               e.nombre + ' ' + e.apellido_paterno + ' ' + e.apellido_materno AS nombre
-        FROM medico m
-        JOIN medicoespecialidad me 
-          ON m.id_medico = me.id_medico
-        JOIN empleado e 
-          ON m.id_empleado = e.id_empleado
-        WHERE me.id_especialidad = ?
-        ORDER BY nombre
+    $sql = "
+        SELECT 
+            u.nombre, 
+            u.ap_paterno, 
+            u.ap_materno,
+            e.nombre_especialidad,
+            emp.rfc
+        FROM doctor d
+        INNER JOIN empleado emp 
+            ON d.id_empleado = emp.id_empleado
+        INNER JOIN usuario u 
+            ON emp.id_usuario = u.id_usuario
+        INNER JOIN doctor_especialidad de 
+            ON d.cedula = de.cedula
+        INNER JOIN especialidad e 
+            ON de.id_especialidad = e.id_especialidad
+        WHERE e.id_especialidad = ?
+        ORDER BY u.nombre, u.ap_paterno;
     ";
-    $stmt = sqlsrv_query($conn, $tsql, [$id_esp]);
+
+    $stmt = sqlsrv_query($conn, $sql, [ $id_esp ]);
     if ($stmt === false) {
         echo json_encode(sqlsrv_errors(), JSON_PRETTY_PRINT);
         exit;
     }
+
     $out = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $out[] = $row;
@@ -58,28 +58,24 @@ if ($action === 'getDoctores') {
 }
 
 
-
-
-// --- Endpoint: Citas del paciente en sesión ---
+// --- Obtener citas del paciente ---
 if ($action === 'getCitas') {
     header('Content-Type: application/json; charset=UTF-8');
-    $id_pac = $_SESSION['id_paciente'] ?? 0;
-    if (!$id_pac) { echo json_encode([]); exit; }
-    $tsql = "
-        SELECT t.id_turno,
-               CONVERT(varchar(10), t.fecha_turno, 23) AS fecha,
-               CONVERT(varchar(5), t.fecha_turno, 108) AS hora,
-               e.nombre + ' ' + e.apellidos AS doctor,
-               es.nombre AS estatus
-        FROM turno t
-        JOIN turno_paciente_medico tpm ON t.id_turno = tpm.id_turno
-        JOIN medico m ON tpm.id_medico = m.id_medico
-        JOIN empleado e ON m.id_empleado = e.id_empleado
-        JOIN estado es ON t.id_estado = es.id_estado
-        WHERE tpm.id_paciente = ?
-        ORDER BY t.fecha_turno DESC
-    ";
-    $stmt = sqlsrv_query($conn, $tsql, [$id_pac]);
+    $id_usuario = $_SESSION['id_usuario'] ?? 0;
+    if (!$id_usuario) { echo json_encode([]); exit; }
+
+    $sql = " SELECT up.nombre AS nombre_paciente, up.ap_paterno AS apellido_paciente, ud.nombre AS nombre_doctor,  ud.ap_paterno AS apellido_doctor,
+  c.fecha_cita,
+  c.fecha_registro,
+  c.estatus_cita
+FROM cita c
+JOIN paciente p ON c.id_paciente = p.id_paciente
+JOIN usuario up ON p.id_usuario = up.id_usuario
+JOIN doctor d ON c.cedula = d.cedula
+JOIN empleado e ON d.id_empleado = e.id_empleado
+JOIN usuario ud ON e.id_usuario = ud.id_usuario;
+where p.id_usuario = ?";
+    $stmt = sqlsrv_query($conn, $sql, [$id_usuario]);
     $out = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $out[] = $row;
@@ -88,64 +84,94 @@ if ($action === 'getCitas') {
     exit;
 }
 
-// --- Procesar formulario de agendar cita ---
+// --- Agendar nueva cita ---
 if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_pac = $_SESSION['id_paciente'] ?? 0;
-    $id_med = intval($_POST['id_medico'] ?? 0);
-    $fecha  = $_POST['fecha_cita'] ?? '';
-    $hora   = $_POST['hora_cita'] ?? '';
-    if (!$id_pac || !$id_med || !$fecha || !$hora) {
-        header('Location: mainPaciente.html?error=1'); exit;
+    $id_usuario = $_SESSION['id_usuario'] ?? 0;
+    $cedula_doctor = trim($_POST['id_medico'] ?? '');  // aquí viene la cédula del doctor
+    $fecha      = $_POST['fecha_cita'] ?? '';
+    $hora       = $_POST['hora_cita'] ?? '';
+    if (!$id_usuario || !$cedula_doctor || !$fecha || !$hora) {
+        header('Location: ../html/mainPaciente.html?error=1');
+        exit;
     }
-    // Construir datetime y validar rango y horario
-    $dt = "$fecha $hora:00";
-    $ts = strtotime($dt);
-    if ($ts < time() + 48*3600 || $ts > strtotime('+3 months')) {
-        header('Location: mainPaciente.html?error=2'); exit;
+
+    // 1) Obtener id_paciente desde id_usuario
+    $stmt = sqlsrv_query(
+        $conn,
+        "SELECT id_paciente FROM paciente WHERE id_usuario = ?",
+        [ $id_usuario ]
+    );
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    $id_paciente = $row['id_paciente'] ?? 0;
+    if (!$id_paciente) {
+        header('Location: ../html/login.html');
+        exit;
+    }
+
+    // 2) Validar rango de fecha y hora
+    $fechaHora = "$fecha $hora:00";
+    $ts = strtotime($fechaHora);
+    if ($ts < time() + 48 * 3600 || $ts > strtotime('+3 months')) {
+        header('Location: ../html/mainPaciente.html?error=2');
+        exit;
     }
     $h = intval(date('H', $ts));
     if ($h < 8 || $h > 18) {
-        header('Location: mainPaciente.html?error=3'); exit;
+        header('Location: ../html/mainPaciente.html?error=3');
+        exit;
     }
-    // Verificar cita duplicada paciente→doctor
-    $check = sqlsrv_query($conn, "
-        SELECT COUNT(*) AS cnt
-        FROM turno_paciente_medico tpm
-        JOIN turno t ON tpm.id_turno = t.id_turno
-        WHERE tpm.id_paciente = ? AND tpm.id_medico = ? AND t.id_estado IN (1,2)
-    ", [$id_pac, $id_med]);
+
+    // 3) Verificar cita duplicada (paciente–doctor) en la tabla cita
+    $check = sqlsrv_query(
+        $conn,
+        "SELECT COUNT(*) AS cnt
+         FROM cita
+         WHERE id_paciente = ? AND cedula = ? AND id_estado_cita IN (1,2)",
+        [ $id_paciente, $cedula_doctor ]
+    );
     $cnt = sqlsrv_fetch_array($check, SQLSRV_FETCH_ASSOC)['cnt'];
     if ($cnt > 0) {
-        header('Location: mainPaciente.html?error=4'); exit;
+        header('Location: ../html/mainPaciente.html?error=4');
+        exit;
     }
-    // Verificar disponibilidad del doctor
-    $check2 = sqlsrv_query($conn, "
-        SELECT COUNT(*) AS cnt
-        FROM turno t
-        JOIN turno_paciente_medico tpm ON t.id_turno = tpm.id_turno
-        WHERE tpm.id_medico = ? AND t.fecha_turno = ?
-    ", [$id_med, $dt]);
+
+    // 4) Verificar disponibilidad del doctor en esa fecha y hora
+    $check2 = sqlsrv_query(
+        $conn,
+        "SELECT COUNT(*) AS cnt
+         FROM cita
+         WHERE cedula = ? AND fecha_cita = ?",
+        [ $cedula_doctor, $fechaHora ]
+    );
     $cnt2 = sqlsrv_fetch_array($check2, SQLSRV_FETCH_ASSOC)['cnt'];
     if ($cnt2 > 0) {
-        header('Location: mainPaciente.html?error=5'); exit;
+        header('Location: ../html/mainPaciente.html?error=5');
+        exit;
     }
-    // Insertar turno
-    sqlsrv_query($conn, 
-        "INSERT INTO turno (fecha_turno, id_estado) VALUES (?, 1)",
-        [$dt]
-    );
-    // Obtener nuevo ID
-    $res = sqlsrv_query($conn, "SELECT @@IDENTITY AS id");
-    $newId = sqlsrv_fetch_array($res, SQLSRV_FETCH_ASSOC)['id'];
-    // Insertar relación paciente-medico
-    sqlsrv_query($conn,
-        "INSERT INTO turno_paciente_medico (id_turno, id_paciente, id_medico) VALUES (?, ?, ?)",
-        [$newId, $id_pac, $id_med]
-    );
-    header('Location: mainPaciente.html');
-    exit;
+
+    // 5) Insertar directamente en la tabla 'cita'
+    $fechaRegistro = date('Y-m-d H:i:s');  // formato adecuado para SQL Server
+    $sql = "
+        INSERT INTO cita
+            (cedula, id_paciente, id_pago, fecha_cita, fecha_registro, estatus_cita)
+        VALUES (?, ?, 1, ?, ?, 1)
+    ";
+    $params = [
+        $cedula_doctor,
+        $id_paciente,
+        $fechaHora,
+        $fechaRegistro
+    ];
+    $stmt = sqlsrv_query($conn, $sql, $params);
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+   header('Location: ../html/mainPaciente.html?success=1');
+exit;
+
 }
 
-// Si no hay acción, simplemente devolvemos 404
+
 http_response_code(404);
 exit;
