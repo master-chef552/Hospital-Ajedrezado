@@ -29,7 +29,7 @@ if ($action === 'getDoctores') {
             u.ap_paterno, 
             u.ap_materno,
             e.nombre_especialidad,
-            emp.rfc
+            d.cedula
         FROM doctor d
         INNER JOIN empleado emp 
             ON d.id_empleado = emp.id_empleado
@@ -64,7 +64,10 @@ if ($action === 'getCitas') {
     $id_usuario = $_SESSION['id_usuario'] ?? 0;
     if (!$id_usuario) { echo json_encode([]); exit; }
 
-    $sql = " SELECT up.nombre AS nombre_paciente, up.ap_paterno AS apellido_paciente, ud.nombre AS nombre_doctor,  ud.ap_paterno AS apellido_doctor,
+    $sql = " SELECT up.nombre AS nombre_paciente, 
+    up.ap_paterno AS apellido_paciente, 
+    ud.nombre AS nombre_doctor,  
+    ud.ap_paterno AS apellido_doctor,
   c.fecha_cita,
   c.fecha_registro,
   c.estatus_cita
@@ -73,11 +76,14 @@ JOIN paciente p ON c.id_paciente = p.id_paciente
 JOIN usuario up ON p.id_usuario = up.id_usuario
 JOIN doctor d ON c.cedula = d.cedula
 JOIN empleado e ON d.id_empleado = e.id_empleado
-JOIN usuario ud ON e.id_usuario = ud.id_usuario;
+JOIN usuario ud ON e.id_usuario = ud.id_usuario
 where p.id_usuario = ?";
     $stmt = sqlsrv_query($conn, $sql, [$id_usuario]);
     $out = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        if ($row['fecha_cita'] instanceof DateTime) {
+        $row['fecha_cita'] = $row['fecha_cita']->format('Y-m-d H:i:s');
+    }
         $out[] = $row;
     }
     echo json_encode($out);
@@ -91,7 +97,7 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $fecha      = $_POST['fecha_cita'] ?? '';
     $hora       = $_POST['hora_cita'] ?? '';
     if (!$id_usuario || !$cedula_doctor || !$fecha || !$hora) {
-        header('Location: ../html/mainPaciente.html?error=1');
+        header('Location: ../html/mainPacientehtml.php?error=1');
         exit;
     }
 
@@ -112,12 +118,12 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $fechaHora = "$fecha $hora:00";
     $ts = strtotime($fechaHora);
     if ($ts < time() + 48 * 3600 || $ts > strtotime('+3 months')) {
-        header('Location: ../html/mainPaciente.html?error=2');
+        header('Location: ../html/mainPacientehtml.php?error=2');
         exit;
     }
     $h = intval(date('H', $ts));
     if ($h < 8 || $h > 18) {
-        header('Location: ../html/mainPaciente.html?error=3');
+        header('Location: ../html/mainPacientehtml.php?error=3');
         exit;
     }
 
@@ -131,7 +137,7 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     );
     $cnt = sqlsrv_fetch_array($check, SQLSRV_FETCH_ASSOC)['cnt'];
     if ($cnt > 0) {
-        header('Location: ../html/mainPaciente.html?error=4');
+        header('Location: ../html/mainPacientehtml.php?error=4');
         exit;
     }
 
@@ -145,29 +151,37 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     );
     $cnt2 = sqlsrv_fetch_array($check2, SQLSRV_FETCH_ASSOC)['cnt'];
     if ($cnt2 > 0) {
-        header('Location: ../html/mainPaciente.html?error=5');
+        header('Location: ../html/mainPacientehtml.php?error=5');
         exit;
     }
 
     // 5) Insertar directamente en la tabla 'cita'
     $fechaRegistro = date('Y-m-d H:i:s');  // formato adecuado para SQL Server
+    // Antes del insert:
+    $seq = sqlsrv_query($conn, "SELECT ISNULL(MAX(id_cita), 0) + 1 AS next_id FROM cita");
+    $row = sqlsrv_fetch_array($seq, SQLSRV_FETCH_ASSOC);
+    $nextId = $row['next_id'];
+
+    // Luego en tu INSERT:
     $sql = "
-        INSERT INTO cita
-            (cedula, id_paciente, id_pago, fecha_cita, fecha_registro, estatus_cita)
-        VALUES (?, ?, 1, ?, ?, 1)
-    ";
+            INSERT INTO cita
+            (id_cita, cedula, id_paciente, id_pago, fecha_cita, fecha_registro, estatus_cita)
+            VALUES (?, ?, ?, 1, ?, ?, 1)
+        ";
     $params = [
+        $nextId,
         $cedula_doctor,
         $id_paciente,
         $fechaHora,
         $fechaRegistro
     ];
+
     $stmt = sqlsrv_query($conn, $sql, $params);
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
 
-   header('Location: ../html/mainPaciente.html?success=1');
+   header('Location: ../html/mainPacientehtml.php?success=1');
 exit;
 
 }

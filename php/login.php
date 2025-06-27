@@ -15,7 +15,7 @@ if (empty($username) || empty($password)) {
 }
 
 // 1. Verificar usuario por correo y contraseña
-$sql = "SELECT id_tipo_usuario, contrasena  FROM usuario WHERE correo = ?";
+$sql = "SELECT id_usuario, id_tipo_usuario, contrasena  FROM usuario WHERE correo = ?";
 $params = [ $username ];
 
 $stmt = sqlsrv_query($conn, $sql, $params);
@@ -32,7 +32,7 @@ if ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         // 2. Redirigir según tipo de usuario
         switch ($row['id_tipo_usuario']) {
             case 1:
-                header("Location: ../html/mainPaciente.html");
+                header("Location: ../html/mainPacientehtml.php");
                 break;
             case 2:
                 header("Location: ../html/mainDoctor.html");

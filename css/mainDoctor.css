@@ -7,6 +7,7 @@ html, body {
   font-family: Arial, sans-serif;
   background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
   background-size: cover;
+  overflow-x: hidden;
 }
 
 /* Barra de navegación */
@@ -151,7 +152,7 @@ html, body {
 
 
 .infoPaciente {
-  width: 1350px;
+  width: auto;
   height: 200px;
   margin: 30px;
   display: flex;

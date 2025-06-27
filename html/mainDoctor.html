@@ -34,6 +34,7 @@
       <div class="agenda-citasDatos">
         <div class="agenda-citas">
           <p>Citas</p>
+
         </div>
 
         <div class="agenda-datos">
@@ -58,6 +59,41 @@
       
     </div>
 
+
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("../php/citasDoctor.php")
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      const citasDiv = document.querySelector(".agenda-citas");
+      const datosDiv = document.querySelector(".agenda-datos");
+
+
+      if (data.length === 0) {
+        citasDiv.innerHTML += "<p>No hay citas próximas.</p>";
+        return;
+      }
+
+      data.forEach(cita => {
+        const fecha = new Date(cita.fecha_cita.date);
+        const fechaStr = fecha.toLocaleDateString("es-MX");
+        const horaStr = fecha.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+
+        citasDiv.innerHTML += `<p>📅 ${fechaStr} - ${horaStr}</p>`;
+        datosDiv.innerHTML += `<p>🧑 ${cita.nombre_paciente} ${cita.ap_paterno_paciente} ${cita.ap_materno_paciente}</p>`;
+      });
+    })
+    .catch(err => {
+      console.error("Error al cargar citas:", err);
+    });
+});
+</script>
 
     
 </body>

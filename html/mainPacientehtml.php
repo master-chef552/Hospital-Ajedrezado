@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (empty($_SESSION['id_usuario'])) {
+    header('Location: login.html');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,7 +36,7 @@
 
     <div class="windows">
       <!-- Ver mis citas -->
-      <div class="expandable-window">
+      <div class="expandable-window" style="max-height: 1000px; padding: 1rem;">
         <div class="window-header">Ver mis citas</div>
         <div class="window-content" id="citasContainer">
           <p>Cargando tus citas…</p>
@@ -36,7 +44,7 @@
       </div>
 
       <!-- Agendar nuevas citas -->
-      <div class="expandable-window">
+      <div class="expandable-window" style="max-height: 1000px; padding: 1rem;">
         <div class="window-header">Agendar nuevas citas</div>
         <div class="window-content">
 
@@ -115,13 +123,14 @@
       const msgs = {
         '1':'Debe completar todos los campos.',
         '2':'Fecha fuera de rango.',
-        '3':'Horario inválido (8:00–18:00).',
+        '3':'Horario inválido (8:00-18:00).',
         '4':'Ya tienes cita pendiente con este doctor.',
         '5':'Doctor no disponible en ese horario.'
       };
       const p = document.getElementById('errorServidor');
       p.textContent = msgs[err] || 'Error desconocido.';
       p.style.display = 'block';
+      alert(msgs[err] || 'Error desconocido.');
     })();
 
     // Utilidad fetch JSON
@@ -129,33 +138,43 @@
       .then(r => r.ok ? r.json() : Promise.reject(r.statusText));
 
     // 4) Cargar y mostrar citas
-    function showCitas(data) {
-      const ct = document.getElementById('citasContainer');
-      if (!data.length) {
-        ct.innerHTML = "<p>No tienes citas registradas.</p>";
-        return;
-      }
-      let html = `<table class="citas-table">
-        <thead><tr>
-          <th>ID</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estatus</th>
-        </tr></thead><tbody>`;
-      data.forEach(r => {
-        html += `<tr>
-          <td>${r.id_turno}</td>
-          <td>${r.doctor}</td>
-          <td>${r.fecha}</td>
-          <td>${r.hora}</td>
-          <td>${r.estatus}</td>
-        </tr>`;
-      });
-      ct.innerHTML = html + `</tbody></table>`;
-    }
     fetchJSON('../php/mainPaciente.php?action=getCitas')
       .then(showCitas)
       .catch(err => {
         document.getElementById('citasContainer')
           .innerHTML = `<p style="color:red;">${err}</p>`;
       });
+
+    function showCitas(data) {
+    const ct = document.getElementById('citasContainer');
+    if (!data.length) {
+      ct.innerHTML = "<p>No tienes citas registradas.</p>";
+      return;
+    }
+    let html = `<table class="citas-table">
+      <thead><tr>
+        <th>ID</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estatus</th>
+      </tr></thead><tbody>`;
+
+    data.forEach(r => {
+      // 1) Nombre completo del doctor
+      const doctor = `${r.nombre_doctor} ${r.apellido_doctor}`;
+      // 2) Separar fecha y hora
+      const [fecha, time] = r.fecha_cita.split(' ');
+      const hora = time.slice(0,5); // "HH:MM"
+      // 3) Estatus tal cual llega
+      html += `<tr>
+        <td data-label="ID">${r.id_turno}</td>
+        <td data-label="Doctor">${doctor}</td>
+        <td data-label="Fecha">${fecha}</td>
+        <td data-label="Hora">${hora}</td>
+        <td data-label="Estatus">${r.estatus_cita}</td>
+      </tr>`;
+    });
+
+    ct.innerHTML = html + `</tbody></table>`;
+  }
+    
 
     // 5) Cargar especialidades
     const selEsp = document.getElementById('especialidadSelect');
@@ -178,8 +197,12 @@
       fetchJSON(`../php/mainPaciente.php?action=getDoctores&id_especialidad=${id}`)
         .then(data => {
           selDoc.innerHTML = '<option value="">-- Elige doctor --</option>';
-          data.forEach(d => selDoc.add(new Option(d.nombre, d.id_medico)));
-          selDoc.disabled = false;
+          data.forEach(d => {
+          const texto = `${d.nombre} ${d.ap_paterno} ${d.ap_materno}`;
+          selDoc.add(new Option(texto, d.cedula)); 
+      });
+selDoc.disabled = false;
+
         })
         .catch(_ => {
           selDoc.innerHTML = '<option>Error cargando doctores</option>';

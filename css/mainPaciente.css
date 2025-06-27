@@ -96,8 +96,8 @@ html, body {
 
 .window-content {
   background-color: #f9f9f9;
-  padding: 0;
-  max-height: 0;
+  padding: 1rem;
+  max-height: auto;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
@@ -111,27 +111,48 @@ html, body {
   margin: 1rem;
 }
 
-/* Tablas más elegantes */
-.panel-body .citas-table {
+/* Estilo general de la tabla */
+.citas-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
+  max-width: 800px;
+  margin: 1.5rem auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
 }
 
-.panel-body .citas-table th,
-.panel-body .citas-table td {
-  background: #f9f9f9;
+/* Encabezado */
+.citas-table thead {
+  background-color: #2a9d8f;
+  color: #ffffff;
+}
+
+.citas-table th {
   padding: 0.75rem 1rem;
-  text-align: left;
-}
-
-.panel-body .citas-table th {
-  background: #e9ecef;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.panel-body .citas-table tr:last-child td {
-  border-bottom: none;
+/* Filas y celdas */
+.citas-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Zebra striping */
+.citas-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover en filas */
+.citas-table tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: default;
 }
 
 /* Formularios dentro del panel */
@@ -175,6 +196,37 @@ html, body {
   margin-top: 0.5rem;
   font-size: 0.875rem;
   color: #d9534f;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 600px) {
+  .citas-table thead {
+    display: none;
+  }
+  .citas-table,
+  .citas-table tbody,
+  .citas-table tr,
+  .citas-table td {
+    display: block;
+    width: 100%;
+  }
+  .citas-table tr {
+    margin-bottom: 0.75rem;
+  }
+  .citas-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+  .citas-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    width: 45%;
+    padding-right: 1rem;
+    font-weight: 600;
+    text-align: left;
+  }
 }
 
 
