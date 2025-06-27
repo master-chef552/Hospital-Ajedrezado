@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (empty($_SESSION['id_usuario'])) {
+    header('Location: login.html');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +19,7 @@
 
     <!-- Navbar -->
     <div class="navbar">
-      <a href="mainDoctor.html" class="color">
+      <a href="mainDoctorhtml.php" class="color">
         <div class="hospital-name">Hospital Ajedrezado</div>
       </a>
       <div class="profile-button">
@@ -34,7 +41,6 @@
       <div class="agenda-citasDatos">
         <div class="agenda-citas">
           <p>Citas</p>
-
         </div>
 
         <div class="agenda-datos">
@@ -63,7 +69,7 @@
 
     <script>
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("../php/citasDoctor.php")
+  fetch("../php/mainDoctor.php")
     .then(res => res.json())
     .then(data => {
       if (data.error) {
@@ -85,8 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const fechaStr = fecha.toLocaleDateString("es-MX");
         const horaStr = fecha.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
 
-        citasDiv.innerHTML += `<p>📅 ${fechaStr} - ${horaStr}</p>`;
-        datosDiv.innerHTML += `<p>🧑 ${cita.nombre_paciente} ${cita.ap_paterno_paciente} ${cita.ap_materno_paciente}</p>`;
+        citasDiv.innerHTML += `<p> ${cita.consultaID}</p>`;
+        datosDiv.innerHTML += `<p>${fechaStr} - ${horaStr} ${cita.nombre_paciente} ${cita.apellido_paciente}</p>`;
       });
     })
     .catch(err => {

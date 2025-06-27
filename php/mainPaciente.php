@@ -64,20 +64,23 @@ if ($action === 'getCitas') {
     $id_usuario = $_SESSION['id_usuario'] ?? 0;
     if (!$id_usuario) { echo json_encode([]); exit; }
 
-    $sql = " SELECT up.nombre AS nombre_paciente, 
-    up.ap_paterno AS apellido_paciente, 
-    ud.nombre AS nombre_doctor,  
-    ud.ap_paterno AS apellido_doctor,
-  c.fecha_cita,
-  c.fecha_registro,
-  c.estatus_cita
-FROM cita c
-JOIN paciente p ON c.id_paciente = p.id_paciente
-JOIN usuario up ON p.id_usuario = up.id_usuario
-JOIN doctor d ON c.cedula = d.cedula
-JOIN empleado e ON d.id_empleado = e.id_empleado
-JOIN usuario ud ON e.id_usuario = ud.id_usuario
-where p.id_usuario = ?";
+    $sql = " SELECT 
+        ud.nombre AS nombre_doctor,  
+        ud.ap_paterno AS apellido_doctor,
+        c.fecha_cita,
+        ec.estado AS estado_cita,
+	    esp.nombre_especialidad AS nombre_especialidad
+    FROM cita c
+    JOIN paciente p ON c.id_paciente = p.id_paciente
+    JOIN usuario up ON p.id_usuario = up.id_usuario
+    JOIN doctor d ON c.cedula = d.cedula
+    JOIN empleado e ON d.id_empleado = e.id_empleado
+    JOIN usuario ud ON e.id_usuario = ud.id_usuario
+    JOIN estado_cita ec ON ec.id_estado_cita = c.estatus_cita
+    JOIN doctor_especialidad de ON de.cedula = d.cedula
+    JOIN especialidad esp ON esp.id_especialidad = de.id_especialidad
+    WHERE p.id_usuario = ?";
+
     $stmt = sqlsrv_query($conn, $sql, [$id_usuario]);
     $out = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {

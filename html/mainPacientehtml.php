@@ -137,6 +137,7 @@ if (empty($_SESSION['id_usuario'])) {
     const fetchJSON = url => fetch(url, { credentials: 'include' })
       .then(r => r.ok ? r.json() : Promise.reject(r.statusText));
 
+
     // 4) Cargar y mostrar citas
     fetchJSON('../php/mainPaciente.php?action=getCitas')
       .then(showCitas)
@@ -153,7 +154,7 @@ if (empty($_SESSION['id_usuario'])) {
     }
     let html = `<table class="citas-table">
       <thead><tr>
-        <th>ID</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estatus</th>
+        <th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Especialidad</th>
       </tr></thead><tbody>`;
 
     data.forEach(r => {
@@ -164,11 +165,11 @@ if (empty($_SESSION['id_usuario'])) {
       const hora = time.slice(0,5); // "HH:MM"
       // 3) Estatus tal cual llega
       html += `<tr>
-        <td data-label="ID">${r.id_turno}</td>
         <td data-label="Doctor">${doctor}</td>
         <td data-label="Fecha">${fecha}</td>
         <td data-label="Hora">${hora}</td>
-        <td data-label="Estatus">${r.estatus_cita}</td>
+        <td data-label="Estatus">${r.estado_cita}</td>
+        <td data-label="Especialidad">${r.nombre_especialidad}</td>
       </tr>`;
     });
 

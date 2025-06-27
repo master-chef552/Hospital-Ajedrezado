@@ -27,10 +27,21 @@ if (!$cedula) {
 }
 
 // Consultar citas futuras para esa cédula
-$sql = "
-select *from vista_citas_por_doctor 
-where cedula_doctor= ?
-";
+$sql = "SELECT 
+	    c.id_cita AS consultaID,
+        up.nombre AS nombre_paciente,  
+        up.ap_paterno AS apellido_paciente,
+        c.fecha_cita AS fecha_cita
+    FROM cita c
+    JOIN paciente p ON c.id_paciente = p.id_paciente
+    JOIN usuario up ON p.id_usuario = up.id_usuario
+    JOIN doctor d ON c.cedula = d.cedula
+    JOIN empleado e ON d.id_empleado = e.id_empleado
+    JOIN usuario ud ON e.id_usuario = ud.id_usuario
+    JOIN estado_cita ec ON ec.id_estado_cita = c.estatus_cita
+    JOIN doctor_especialidad de ON de.cedula = d.cedula
+    WHERE c.cedula = ? 
+    AND ec.id_estado_cita = 2";
 $stmt = sqlsrv_query($conn, $sql, [$cedula]);
 if ($stmt === false) {
     http_response_code(500);

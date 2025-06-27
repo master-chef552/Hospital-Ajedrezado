@@ -35,10 +35,10 @@ if ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
                 header("Location: ../html/mainPacientehtml.php");
                 break;
             case 2:
-                header("Location: ../html/mainDoctor.html");
+                header("Location: ../html/mainDoctorhtml.php");
                 break;
             case 3:
-                header("Location: ../html/mainRecepcionista.html");
+                header("Location: ../html/mainRecepcionistahtml.php");
                 break;
             default:
                 header("Location: ../html/login.html?error=4"); // tipo inválido
