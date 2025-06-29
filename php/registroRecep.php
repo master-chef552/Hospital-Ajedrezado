@@ -4,7 +4,7 @@ session_start();
 require_once __DIR__ . '/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ../html/mainRecepcionista.html');
+    header('Location: ../html/mainRecepcionistahtml.php');
     exit;
 }
 
@@ -20,7 +20,10 @@ $correo         = strtolower(trim($_POST['correo'] ?? ''));
 $pass           = $_POST['contrasena'] ?? '';
 $pass2          = $_POST['contrasena2'] ?? '';
 $tipoEmpleado   = trim($_POST['tipoEmpleado'] ?? '');
+$sueldo         = trim($_POST['sueldo'] ?? '');
+$rfc            = trim($_POST['rfc'] ?? '');
 $especialidad   = trim($_POST['especialidad'] ?? '');
+$cedulaDoctor   = trim($_POST['cedulaDoctor'] ?? '');
 
 // 2) Validaciones básicas
 if (
@@ -38,7 +41,9 @@ if ($pass !== $pass2) {
 if ($tipoUsuario === 'paciente') {
     $idTipoUsr = 1;
 } elseif ($tipoUsuario === 'empleado') {
-    if ($tipoEmpleado === 'Doctor') {
+    if(empty($sueldo) || empty($rfc)) {
+        die('Sueldo y RFC son obligatorios para empleados.');
+    } elseif ($tipoEmpleado === 'Doctor') {
         $idTipoUsr = 2;
         if (empty($especialidad)) {
             die('Debes seleccionar una especialidad para el doctor.');
@@ -93,17 +98,16 @@ try {
         $sql = "
           INSERT INTO empleado
             (id_empleado, id_usuario, salario, estatus, rfc, id_tipo_empleado)
-          VALUES (?, ?, NULL, 'Activo', NULL, ?)
+          VALUES (?, ?, ?, 'Activo', ?, ?)
         ";
-        if (!sqlsrv_query($conn, $sql, [ $nextEmp, $nextUsr, $idTipoEmp ])) {
+        if (!sqlsrv_query($conn, $sql, [ $nextEmp, $nextUsr, $sueldo, $rfc, $idTipoEmp ])) {
             throw new Exception('Error al insertar empleado: ' . print_r(sqlsrv_errors(), true));
         }
 
         // ——— Si es Doctor, guardamos en doctor y doctor_especialidad ———
         if ($tipoEmpleado === 'Doctor') {
             // 1) doctor
-            $cedula = (string)$nextEmp;  // usamos el mismo id_empleado como cédula
-            if (!sqlsrv_query($conn, "INSERT INTO doctor (cedula, id_empleado) VALUES (?, ?)", [ $cedula, $nextEmp ])) {
+            if (!sqlsrv_query($conn, "INSERT INTO doctor (cedula, id_empleado) VALUES (?, ?)", [ $cedulaDoctor, $nextEmp ])) {
                 throw new Exception('Error al insertar doctor: ' . print_r(sqlsrv_errors(), true));
             }
 
@@ -130,8 +134,51 @@ try {
                 (id_doc_esp, cedula, id_especialidad, estatus)
               VALUES (?, ?, ?, 'Activo')
             ";
-            if (!sqlsrv_query($conn, $sql, [ $nextDocEsp, $cedula, $idEsp ])) {
+            if (!sqlsrv_query($conn, $sql, [ $nextDocEsp, $cedulaDoctor, $idEsp ])) {
                 throw new Exception('Error al insertar doctor_especialidad: ' . print_r(sqlsrv_errors(), true));
+            }
+            // 4) consultorio
+
+            // Obtener el siguiente ID de consultorio
+            $res4 = sqlsrv_query($conn, "SELECT ISNULL(MAX(id_consultorio), 0) + 1 AS next_id FROM consultorio");
+            $row4 = sqlsrv_fetch_array($res4, SQLSRV_FETCH_ASSOC);
+            $nextConID = (int)$row4['next_id'];
+            sqlsrv_free_stmt($res4);
+
+            // Obtener el siguiente número de consultorio ('C-N')
+            $res5 = sqlsrv_query($conn, "SELECT ISNULL(MAX(CAST(SUBSTRING(numero_consultorio, 3, 10) AS INT)), 0) + 1 AS next_number
+             FROM consultorio
+");
+            $row5 = sqlsrv_fetch_array($res5, SQLSRV_FETCH_ASSOC);
+            $nextConNumber = "C-" . $row5['next_number'];
+            sqlsrv_free_stmt($res5);
+
+            // Insertar nuevo consultorio
+            $sql = "INSERT INTO consultorio
+            (id_consultorio, numero_consultorio, planta)
+             VALUES (?, ?, 'Planta Baja')
+            ";
+            $params = [ $nextConID, $nextConNumber ];
+
+            if (!sqlsrv_query($conn, $sql, $params)) {
+           throw new Exception('Error al asignar consultorio: ' . print_r(sqlsrv_errors(), true));
+}
+
+
+
+//se asigna consultorio
+            $res3 = sqlsrv_query($conn, "SELECT ISNULL(MAX(id_asignacion_consultorio),0)+1 AS next_id FROM asignacion_consultorio");
+            $row3 = sqlsrv_fetch_array($res3, SQLSRV_FETCH_ASSOC);
+            $nextasig = (int)$row3['next_id'];
+            sqlsrv_free_stmt($res3);
+
+            $sql = "
+              INSERT INTO asignacion_consultorio
+                (id_asignacion_consultorio, cedula, id_consultorio, hora_inicio, hora_fin, dias)
+              VALUES (?, ?, ?, '08:00:00', '16:00:00', 'Lunes-Viernes')
+            ";
+            if (!sqlsrv_query($conn, $sql, [ $nextasig, $cedulaDoctor, $nextConID ])) {
+                throw new Exception('Error al insertar asignacion_consultorio: ' . print_r(sqlsrv_errors(), true));
             }
         }
     }
@@ -141,7 +188,7 @@ try {
         throw new Exception('Error al confirmar transacción: ' . print_r(sqlsrv_errors(), true));
     }
 
-    header('Location: ../html/mainRecepcionista.html?user_created=1');
+    header('Location: ../html/mainRecepcionistahtml.php?user_created=1');
     exit;
 }
 catch (Exception $e) {

@@ -1,4 +1,10 @@
-<!-- createPerfil.html -->
+<?php
+session_start();
+if (empty($_SESSION['id_usuario'])) {
+    header('Location: login.html');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,7 +15,18 @@
   <link rel="stylesheet" href="../css/mainRecepcionista.css">
 </head>
 <body>
-  <!-- Navbar omitido para brevedad -->
+
+  <!-- Navbar -->
+    <div class="navbar">
+      <a href="mainRecepcionistahtml.php" class="color">
+        <div class="hospital-name">Hospital Ajedrezado</div>
+      </a>
+      <div class="profile-button">
+        <a href="perfilRecepcionista.html">
+          <img src="../imagenes/sesion.png" alt="Perfil">
+        </a>
+      </div>
+    </div>
 
   <div class="welcome">
     <h1>Bienvenido al sistema de Recepcionista</h1>
@@ -80,28 +97,46 @@
             <option value="Doctor">Doctor</option>
           </select>
         </div>
-        <!-- createPerfil.html (fragmento modificado) -->
-<div class="caja" id="cont-especialidad" style="display: none;">
-  <h5>¿Qué especialidad?</h5>
-  <select id="especialidad" name="especialidad">
-    <option value="">-- Seleccione --</option>
-    <option value="Cardiología">Cardiología</option>
-    <option value="Dermatología">Dermatología</option>
-    <option value="Ginecología">Ginecología</option>
-    <option value="Medicina General">Medicina General</option>
-    <option value="Nefrología">Nefrología</option>
-    <option value="Nutriología">Nutriología</option>
-    <option value="Oftalmología">Oftalmología</option>
-    <option value="Oncología">Oncología</option>
-    <option value="Ortopedia">Ortopedia</option>
-    <option value="Pediatría">Pediatría</option>
-  </select>
-</div>
 
+        <div class="caja" id="sueldo" style="display: none;">
+          <h5>Sueldo:</h5>
+          <input type="number" id="sueldo" name="sueldo" placeholder="Ingrese el sueldo del empleado">
+        </div>
+
+        <div class="caja" id="rfc" style="display: none;">
+          <h5>RFC:</h5>
+          <input type="text" id="rfc" name="rfc" placeholder="Ingrese el RFC del empleado">
+        </div>
       </div>
+        <div class="fila">  
+          <!-- createPerfil.html (fragmento modificado) -->
+          <div class="caja" id="cont-especialidad" style="display: none;">
+              <h5>¿Qué especialidad?</h5>
+              <select id="especialidad" name="especialidad">
+                <option value="">-- Seleccione --</option>
+                <option value="Cardiología">Cardiología</option>
+                <option value="Dermatología">Dermatología</option>
+                <option value="Ginecología">Ginecología</option>
+                <option value="Medicina General">Medicina General</option>
+                <option value="Nefrología">Nefrología</option>
+                <option value="Nutriología">Nutriología</option>
+                <option value="Oftalmología">Oftalmología</option>
+                <option value="Oncología">Oncología</option>
+                <option value="Ortopedia">Ortopedia</option>
+                <option value="Pediatría">Pediatría</option>
+              </select>
+          </div>
 
-      <div class="fila">
-        <button type="submit" class="boton">Crear Perfil</button>
+          <div class="caja" id="cont-cedula" style="display: none;">
+            <h5>Cedula del doctor</h5>
+            <input type="text" id="cedulaDoctor" name="cedulaDoctor" placeholder="Ingrese la cédula del doctor">
+          </div>
+
+          <button type="submit" class="boton">Crear Perfil</button>
+
+        </div>
+
+        
       </div>
     </form>
   </div>
@@ -126,6 +161,9 @@
     const tipoUsuario  = document.getElementById('tipoUsuario');
     const contTipoEmp   = document.getElementById('cont-tipoEmpleado');
     const tipoEmpleado  = document.getElementById('tipoEmpleado');
+    const sueldo        = document.getElementById('sueldo');
+    const rfc          = document.getElementById('rfc');
+    const cedulaDoctor = document.getElementById('cont-cedula');
 
     const contEsp = document.getElementById('cont-especialidad');
 
@@ -137,6 +175,7 @@
         contTipoEmp.style.display = 'none';
         // ocultar también especialidad en caso de cambio atrás
         contEsp.style.display = 'none';
+        cedulaDoctor.style.display = 'none';
         tipoEmpleado.value = '';
       }
     });
@@ -145,8 +184,10 @@
     tipoEmpleado.addEventListener('change', () => {
       if (tipoEmpleado.value === 'Doctor') {
         contEsp.style.display = 'flex';
+        cedulaDoctor.style.display = 'flex';
       } else {
         contEsp.style.display = 'none';
+        cedulaDoctor.style.display = 'none';
       }
     });
 
@@ -154,8 +195,12 @@
     tipoUsuario.addEventListener('change', () => {
       if (tipoUsuario.value === 'empleado') {
         contTipoEmp.style.display = 'flex';
+        sueldo.style.display = 'flex';
+        rfc.style.display = 'flex';
       } else {
         contTipoEmp.style.display = 'none';
+        sueldo.style.display = 'none';
+        rfc.style.display = 'none';
         tipoEmpleado.value = '';
       }
     });

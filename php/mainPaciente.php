@@ -65,6 +65,8 @@ if ($action === 'getCitas') {
     if (!$id_usuario) { echo json_encode([]); exit; }
 
     $sql = " SELECT 
+        c.folio,
+        c.id_cita,
         ud.nombre AS nombre_doctor,  
         ud.ap_paterno AS apellido_doctor,
         c.fecha_cita,
@@ -158,26 +160,55 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // 5) Insertar directamente en la tabla 'cita'
+    try{
+        // 5) crear pago
+$resPago = sqlsrv_query($conn, "SELECT ISNULL(MAX(id_pago), 0) + 1 AS next_id FROM pago");
+$rowPago = sqlsrv_fetch_array($resPago, SQLSRV_FETCH_ASSOC);
+$id_pago = (int)$rowPago['next_id'];  // ✅ Este es el valor correcto
+
+$fechaLimite = date('Y-m-d H:i:s', time() + 48 * 3600); // 48 horas después
+
+$sqlPago = "
+    INSERT INTO pago (id_pago, monto, forma_pago, limite_pago, id_estado_pago)
+    VALUES (?, '500.00', 'Tarjeta', ?, 2)
+";
+$paramsPago = [
+    $id_pago,
+    $fechaLimite
+];
+$stmtPago = sqlsrv_query($conn, $sqlPago, $paramsPago);
+
+if (!$stmtPago) {
+    die("Error al insertar pago: " . print_r(sqlsrv_errors(), true));
+}
+
+
+
+
+    // 6) Insertar directamente en la tabla 'cita'
     $fechaRegistro = date('Y-m-d H:i:s');  // formato adecuado para SQL Server
     // Antes del insert:
     $seq = sqlsrv_query($conn, "SELECT ISNULL(MAX(id_cita), 0) + 1 AS next_id FROM cita");
     $row = sqlsrv_fetch_array($seq, SQLSRV_FETCH_ASSOC);
     $nextId = $row['next_id'];
+    $folio = $cedula_doctor . '-' . $id_paciente; // Generar folio único
 
     // Luego en tu INSERT:
     $sql = "
             INSERT INTO cita
-            (id_cita, cedula, id_paciente, id_pago, fecha_cita, fecha_registro, estatus_cita)
-            VALUES (?, ?, ?, 1, ?, ?, 1)
+            (id_cita, cedula, id_paciente, id_pago, fecha_cita, fecha_registro, estatus_cita, id_estado_cita, folio)
+            VALUES (?, ?, ?, ?, ?, ?, 1, 1, ?)
         ";
     $params = [
-        $nextId,
-        $cedula_doctor,
-        $id_paciente,
-        $fechaHora,
-        $fechaRegistro
-    ];
+    $nextId,
+    $cedula_doctor,
+    $id_paciente,
+    $id_pago,  
+    $fechaHora,
+    $fechaRegistro,
+    $folio
+];
+
 
     $stmt = sqlsrv_query($conn, $sql, $params);
     if ($stmt === false) {
@@ -186,6 +217,11 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
    header('Location: ../html/mainPacientehtml.php?success=1');
 exit;
+    }catch (Exception $e) {
+        // Si ocurre un error, redirigir a la página principal con un mensaje de error
+        header('Location: ../html/mainPacientehtml.php?error=6');
+        exit;
+    }
 
 }
 

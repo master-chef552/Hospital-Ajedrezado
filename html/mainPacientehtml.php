@@ -19,7 +19,7 @@ if (empty($_SESSION['id_usuario'])) {
   <div class="wrapper">
     <!-- Navbar -->
     <div class="navbar">
-      <a href="mainPaciente.html" class="color">
+      <a href="mainPacientehtml.php" class="color">
         <div class="hospital-name">Hospital Ajedrezado</div>
       </a>
       <div class="profile-button">
@@ -154,7 +154,7 @@ if (empty($_SESSION['id_usuario'])) {
     }
     let html = `<table class="citas-table">
       <thead><tr>
-        <th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Especialidad</th>
+        <th>Folio</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Especialidad</th><th></th>
       </tr></thead><tbody>`;
 
     data.forEach(r => {
@@ -165,11 +165,13 @@ if (empty($_SESSION['id_usuario'])) {
       const hora = time.slice(0,5); // "HH:MM"
       // 3) Estatus tal cual llega
       html += `<tr>
+        <td data-label="Folio">${r.folio}</td>
         <td data-label="Doctor">${doctor}</td>
         <td data-label="Fecha">${fecha}</td>
         <td data-label="Hora">${hora}</td>
         <td data-label="Estatus">${r.estado_cita}</td>
         <td data-label="Especialidad">${r.nombre_especialidad}</td>
+        <td data-label="Pagar"><button class="pagar-btn" data-id="${r.id_cita}">Pagar</button></td>
       </tr>`;
     });
 

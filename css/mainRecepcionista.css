@@ -6,6 +6,7 @@ html, body {
   font-family: Arial, sans-serif;
   background: url('../imagenes/fondo.jpg') no-repeat center center fixed;
   background-size: cover;
+  overflow-x: hidden;
 }
 
 /* Barra de navegación */
@@ -63,7 +64,7 @@ html, body {
 
 .creaPerfil{
   width: 1400px;
-  height: 430px;
+  height: 480px;
   margin: auto;
   margin-bottom: 20px;
   padding-left: 15px;
