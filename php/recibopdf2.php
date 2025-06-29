@@ -42,14 +42,6 @@ $nombre_completo = $row['nombre_completo'];
 $consultorio = $row['consultorio'];
 
 
-// Actualizamos el estado de la cita a "Pagada"
-$sql = "UPDATE cita SET id_estado_cita = 2 WHERE id_cita = ?";
-$params = [$id];
-$stmt = sqlsrv_query($conn, $sql, $params);
-if ($stmt === false) {
-  throw new Exception("Error en consulta: " . print_r(sqlsrv_errors(), true));
-}
-
 ob_start();
 
 ?>
@@ -112,7 +104,7 @@ $dompdf = new Dompdf();
 $html = '<style>' . $css . '</style>' . $html; // Agregar el CSS al HTML
 
 $dompdf->loadHtml($html);
-$dompdf->setPaper('letter', 'horizontal'); // Cambia a 'portrait' si prefieres vertical
+$dompdf->setPaper('letter', 'horizontal'); 
 $dompdf->render();
 $dompdf->stream("comprobante_de_pago.pdf", array("Attachment" => true));
 

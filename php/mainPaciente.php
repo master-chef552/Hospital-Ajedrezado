@@ -23,8 +23,7 @@ if ($action === 'getDoctores') {
     $id_esp = intval($_GET['id_especialidad'] ?? 0);
     if (!$id_esp) { echo json_encode([]); exit; }
 
-    $sql = "
-        SELECT 
+    $sql = "SELECT 
             u.nombre, 
             u.ap_paterno, 
             u.ap_materno,
@@ -39,7 +38,7 @@ if ($action === 'getDoctores') {
             ON d.cedula = de.cedula
         INNER JOIN especialidad e 
             ON de.id_especialidad = e.id_especialidad
-        WHERE e.id_especialidad = ?
+        WHERE e.id_especialidad = ? AND emp.estatus = 'Activo'
         ORDER BY u.nombre, u.ap_paterno;
     ";
 
@@ -64,23 +63,25 @@ if ($action === 'getCitas') {
     $id_usuario = $_SESSION['id_usuario'] ?? 0;
     if (!$id_usuario) { echo json_encode([]); exit; }
 
-    $sql = " SELECT 
+    $sql = "SELECT 
+        p.id_paciente,
         c.folio,
         c.id_cita,
+        c.id_estado_cita,
         ud.nombre AS nombre_doctor,  
         ud.ap_paterno AS apellido_doctor,
         c.fecha_cita,
         ec.estado AS estado_cita,
 	    esp.nombre_especialidad AS nombre_especialidad
     FROM cita c
-    JOIN paciente p ON c.id_paciente = p.id_paciente
-    JOIN usuario up ON p.id_usuario = up.id_usuario
-    JOIN doctor d ON c.cedula = d.cedula
-    JOIN empleado e ON d.id_empleado = e.id_empleado
-    JOIN usuario ud ON e.id_usuario = ud.id_usuario
-    JOIN estado_cita ec ON ec.id_estado_cita = c.estatus_cita
-    JOIN doctor_especialidad de ON de.cedula = d.cedula
-    JOIN especialidad esp ON esp.id_especialidad = de.id_especialidad
+    INNER JOIN paciente p ON c.id_paciente = p.id_paciente
+    INNER JOIN usuario up ON p.id_usuario = up.id_usuario
+    INNER JOIN doctor d ON c.cedula = d.cedula
+    INNER JOIN empleado e ON d.id_empleado = e.id_empleado
+    INNER JOIN usuario ud ON e.id_usuario = ud.id_usuario
+    INNER JOIN estado_cita ec ON ec.id_estado_cita = c.id_estado_cita
+    INNER JOIN doctor_especialidad de ON de.cedula = d.cedula
+    INNER JOIN especialidad esp ON esp.id_especialidad = de.id_especialidad
     WHERE p.id_usuario = ?";
 
     $stmt = sqlsrv_query($conn, $sql, [$id_usuario]);

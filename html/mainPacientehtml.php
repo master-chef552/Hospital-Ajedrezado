@@ -72,7 +72,7 @@ if (empty($_SESSION['id_usuario'])) {
 
             <div class="form-group">
             <label for="horaCita">Hora de la cita:</label>
-            <input type="time" id="horaCita" name="hora_cita" required>
+            <input type="time" step="3600" id="horaCita" name="hora_cita" value="12:00" required>
             </div>
 
             <button type="submit">Solicitar cita</button>
@@ -165,8 +165,10 @@ if (empty($_SESSION['id_usuario'])) {
 
     
     let botonPagar = '';
-    if (r.estado_cita === "Agendada pendiente de pago") {
-      botonPagar = `<button type="submit" class="boton" data-id="${r.id_cita}" data-folio="${r.folio}" data-doctor="${doctor}" data-fecha="${fecha}" data-hora="${hora}" data-especialidad="${r.nombre_especialidad}">Pagar</button>`;
+    if (r.id_estado_cita == 1) {
+      botonPagar = `<button type="submit" class="boton" data-idpaciente="${r.id_paciente}" data-id="${r.id_cita}" data-folio="${r.folio}" data-doctor="${doctor}" data-fecha="${fecha}" data-hora="${hora}" data-especialidad="${r.nombre_especialidad}">Pagar</button>`;
+    }else{
+      botonPagar = `<button type="submit" class="boton2" data-idpaciente="${r.id_paciente}" data-id="${r.id_cita}" data-folio="${r.folio}" data-doctor="${doctor}" data-fecha="${fecha}" data-hora="${hora}" data-especialidad="${r.nombre_especialidad}">Comprobante</button>`;
     }
 
     html += `<tr>
@@ -188,19 +190,59 @@ document.addEventListener('click', function (e) {
   if (e.target.matches('.boton')) {
     const btn = e.target;
 
-    // Crear formulario y agregar campos ocultos
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '../php/reciboPDF.php'; // Ruta a tu recibo
+    form.action = '../php/reciboPDF.php';
 
-    const campos = ['id', 'folio', 'doctor', 'fecha', 'hora', 'especialidad'];
-    campos.forEach(campo => {
+    const campos = {
+      id_paciente: btn.dataset.idpaciente,
+      id: btn.dataset.id,
+      folio: btn.dataset.folio,
+      doctor: btn.dataset.doctor,
+      fecha: btn.dataset.fecha,
+      hora: btn.dataset.hora,
+      especialidad: btn.dataset.especialidad
+    };
+
+    for (const name in campos) {
       const input = document.createElement('input');
       input.type = 'hidden';
-      input.name = campo;
-      input.value = btn.dataset[campo];
+      input.name = name;
+      input.value = campos[name];
       form.appendChild(input);
-    });
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+});
+
+//en caso de que solo sea el comprobante del pago
+document.addEventListener('click', function (e) {
+  if (e.target.matches('.boton2')) {
+    const btn = e.target;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '../php/recibopdf2.php';
+
+    const campos = {
+      id_paciente: btn.dataset.idpaciente,
+      id: btn.dataset.id,
+      folio: btn.dataset.folio,
+      doctor: btn.dataset.doctor,
+      fecha: btn.dataset.fecha,
+      hora: btn.dataset.hora,
+      especialidad: btn.dataset.especialidad
+    };
+
+    for (const name in campos) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = campos[name];
+      form.appendChild(input);
+    }
 
     document.body.appendChild(form);
     form.submit();

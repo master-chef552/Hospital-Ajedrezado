@@ -111,7 +111,7 @@ html, body {
   margin: 1rem;
 }
 
-.boton{
+.boton, .boton2 {
    color: rgb(255, 255, 255);
   margin-top: 10px;
   background-color: #007BFF;
