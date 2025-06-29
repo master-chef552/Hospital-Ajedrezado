@@ -147,36 +147,66 @@ if (empty($_SESSION['id_usuario'])) {
       });
 
     function showCitas(data) {
-    const ct = document.getElementById('citasContainer');
-    if (!data.length) {
-      ct.innerHTML = "<p>No tienes citas registradas.</p>";
-      return;
-    }
-    let html = `<table class="citas-table">
-      <thead><tr>
-        <th>Folio</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Especialidad</th><th></th>
-      </tr></thead><tbody>`;
+  const ct = document.getElementById('citasContainer');
+  if (!data.length) {
+    ct.innerHTML = "<p>No tienes citas registradas.</p>";
+    return;
+  }
 
-    data.forEach(r => {
-      // 1) Nombre completo del doctor
-      const doctor = `${r.nombre_doctor} ${r.apellido_doctor}`;
-      // 2) Separar fecha y hora
-      const [fecha, time] = r.fecha_cita.split(' ');
-      const hora = time.slice(0,5); // "HH:MM"
-      // 3) Estatus tal cual llega
-      html += `<tr>
-        <td data-label="Folio">${r.folio}</td>
-        <td data-label="Doctor">${doctor}</td>
-        <td data-label="Fecha">${fecha}</td>
-        <td data-label="Hora">${hora}</td>
-        <td data-label="Estatus">${r.estado_cita}</td>
-        <td data-label="Especialidad">${r.nombre_especialidad}</td>
-        <td data-label="Pagar"><button class="pagar-btn" data-id="${r.id_cita}">Pagar</button></td>
-      </tr>`;
+  let html = `<table class="citas-table">
+    <thead><tr>
+      <th>Folio</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Especialidad</th><th></th>
+    </tr></thead><tbody>`;
+
+  data.forEach(r => {
+    const doctor = `${r.nombre_doctor} ${r.apellido_doctor}`;
+    const [fecha, time] = r.fecha_cita.split(' ');
+    const hora = time.slice(0, 5);
+
+    
+    let botonPagar = '';
+    if (r.estado_cita === "Agendada pendiente de pago") {
+      botonPagar = `<button type="submit" class="boton" data-id="${r.id_cita}" data-folio="${r.folio}" data-doctor="${doctor}" data-fecha="${fecha}" data-hora="${hora}" data-especialidad="${r.nombre_especialidad}">Pagar</button>`;
+    }
+
+    html += `<tr>
+      <td data-label="Folio">${r.folio}</td>
+      <td data-label="Doctor">${doctor}</td>
+      <td data-label="Fecha">${fecha}</td>
+      <td data-label="Hora">${hora}</td>
+      <td data-label="Estatus">${r.estado_cita}</td>
+      <td data-label="Especialidad">${r.nombre_especialidad}</td>
+      <td data-label="Pagar">${botonPagar}</td>
+    </tr>`;
+  });
+
+  ct.innerHTML = html + `</tbody></table>`;
+}
+
+//mandar el evento de click para el botón de pagar
+document.addEventListener('click', function (e) {
+  if (e.target.matches('.boton')) {
+    const btn = e.target;
+
+    // Crear formulario y agregar campos ocultos
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '../php/reciboPDF.php'; // Ruta a tu recibo
+
+    const campos = ['id', 'folio', 'doctor', 'fecha', 'hora', 'especialidad'];
+    campos.forEach(campo => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = campo;
+      input.value = btn.dataset[campo];
+      form.appendChild(input);
     });
 
-    ct.innerHTML = html + `</tbody></table>`;
+    document.body.appendChild(form);
+    form.submit();
   }
+});
+
     
 
     // 5) Cargar especialidades

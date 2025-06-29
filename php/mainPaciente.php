@@ -164,7 +164,7 @@ if ($action === 'agendarCita' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         // 5) crear pago
 $resPago = sqlsrv_query($conn, "SELECT ISNULL(MAX(id_pago), 0) + 1 AS next_id FROM pago");
 $rowPago = sqlsrv_fetch_array($resPago, SQLSRV_FETCH_ASSOC);
-$id_pago = (int)$rowPago['next_id'];  // ✅ Este es el valor correcto
+$id_pago = (int)$rowPago['next_id']; 
 
 $fechaLimite = date('Y-m-d H:i:s', time() + 48 * 3600); // 48 horas después
 

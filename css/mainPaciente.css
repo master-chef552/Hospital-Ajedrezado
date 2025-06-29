@@ -111,6 +111,18 @@ html, body {
   margin: 1rem;
 }
 
+.boton{
+   color: rgb(255, 255, 255);
+  margin-top: 10px;
+  background-color: #007BFF;
+  border: #007BFF 2px solid;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  align-items: center;
+}
+
 /* Estilo general de la tabla */
 .citas-table {
   width: 100%;
