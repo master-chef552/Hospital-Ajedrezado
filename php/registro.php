@@ -13,6 +13,7 @@ $nombre        = ucwords(strtolower(trim($_POST['nombre'] ?? "")));
 $ap_paterno    = ucwords(strtolower(trim($_POST['ap_paterno'] ?? "")));
 $ap_materno    = ucwords(strtolower(trim($_POST['ap_materno'] ?? "")));
 $fecha_nac     = $_POST['fecha_nacimiento'] ?? "";
+$CURP         = strtoupper(trim($_POST['curp'] ?? ""));
 $telefono      = trim($_POST['telefono'] ?? "");
 $correo        = strtolower(trim($_POST['correo'] ?? ""));
 $nombre_usuario= strtolower(trim($_POST['nombre_usuario'] ?? ""));
@@ -23,7 +24,7 @@ $idTipoUsr     = intval($_POST['id_tipo_usuario'] ?? 1);
 // 2) Validaciones básicas
 if (
     empty($nombre) || empty($ap_paterno) || empty($ap_materno) ||
-    empty($fecha_nac) || empty($telefono) ||
+    empty($fecha_nac) || empty($CURP) || empty($telefono) ||
     empty($correo) || empty($password) || empty($confirmPass)
 ) {
     die("Todos los campos son obligatorios.");
@@ -72,10 +73,10 @@ try {
 
     $sqlPac = "
       INSERT INTO paciente
-        (id_paciente, id_usuario)
-      VALUES (?, ?)
+        (id_paciente, id_usuario, curp)
+      VALUES (?, ?, ?)
     ";
-    $paramsPac = [ $nextPac, $nextUsr ];
+    $paramsPac = [ $nextPac, $nextUsr, $CURP ];
     $stmtPac   = sqlsrv_query($conn, $sqlPac, $paramsPac);
     if ($stmtPac === false) {
         throw new Exception("Error insert paciente: " . print_r(sqlsrv_errors(), true));

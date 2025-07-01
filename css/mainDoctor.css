@@ -64,7 +64,7 @@ html, body {
 
 
 .agenda{    
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: 20px;
   margin-right: 20px;
   padding-left: 15px;
@@ -77,8 +77,9 @@ html, body {
 }
 
 .agenda-citasDatos{
+
      display: flex;
-  gap: 20px;
+     gap: 20px;
 }
 .agenda h3 {
   color: #007BFF;
@@ -92,27 +93,21 @@ html, body {
 }
 
 .agenda-citas {
-    width: 250px;
-    height: 150px;
-    padding-left: 20px;
-    padding-right: 450px;
-    padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  width: fit-content; /* Ajusta el ancho al contenido */
+  width: 400px;
+  height: 250px;
+  box-sizing: border-box;
+  margin-right: 150px;
+  margin-left: 50px;
+  overflow-y: auto;
 }
 
+
 .agenda-datos {
-    width: 180px;
-    height: 150px;
-    border: 1px solid #000000;
-    border-radius: 5px;
- padding-left: 20px;
-    padding-right: 500px;
-    padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    width: 650px;
+    height: 250px;
+    display: flex;
+    overflow-y: auto;
    
 }
 
@@ -125,7 +120,7 @@ html, body {
 }
 
 
-.disenio{
+.disenio, .disenio1{
     display: flex;
     color: #FFFFFF;
     background-color: #007BFF;
@@ -160,6 +155,96 @@ html, body {
   gap: 20px;
   border: #000000 1px solid;
   border-radius: 10px;
+}
+
+
+.botones {
+  display: flex;                /* NECESARIO para alinearlos horizontalmente */
+  align-items: center;          /* Opcional: alinea verticalmente en el centro */
+  gap: 0.75rem;                 /* Espacio entre elementos */
+  margin-top: 10px;
+}
+
+
+
+/* Estilo general de la tabla */
+.citas-table {
+  width: 100%;
+  max-width: 800px;
+  margin: 1.5rem auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Encabezado */
+.citas-table thead {
+  background-color: #2a9d8f;
+  color: #ffffff;
+}
+
+.citas-table th {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Filas y celdas */
+.citas-table td {
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Zebra striping */
+.citas-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover en filas */
+.citas-table tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: default;
+}
+
+.datos-cita-table {
+  width: 100%;
+  max-width: 600px;
+  margin: 1.5rem auto;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.datos-cita-table thead {
+  background-color: #2a9d8f;
+  color: white;
+  text-align: center;
+}
+
+.datos-cita-table th {
+  padding: 1rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.datos-cita-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.datos-cita-table tr:last-child td {
+  border-bottom: none;
 }
 
 

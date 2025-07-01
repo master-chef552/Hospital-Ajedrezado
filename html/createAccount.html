@@ -24,8 +24,9 @@
       <input type="text" name="ap_paterno" placeholder="Apellido Paterno" required>
       <input type="text" name="ap_materno" placeholder="Apellido Materno" required>
 
-      <!-- Fecha de Nacimiento y Teléfono -->
+      <!-- Fecha de Nacimiento, CURP y Teléfono -->
       <input type="date" name="fecha_nacimiento" id="fechaNacimiento" required>
+      <input type="text" name="curp" placeholder="CURP" required>
       <input type="text" name="telefono" placeholder="Teléfono" required>
 
       <!-- Correo y usuario -->
@@ -58,9 +59,9 @@
         e.preventDefault();
         return;
       }
-      // Usamos el correo como nombre de usuario
+      // Usamos el nombre como nombre de usuario
       document.querySelector("input[name='nombre_usuario']").value =
-        document.querySelector("input[name='correo']").value.trim().toLowerCase();
+        document.querySelector("input[name='nombre']").value.trim().toLowerCase();
     });
   </script>
 </body>

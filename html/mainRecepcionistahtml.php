@@ -11,7 +11,7 @@ if (empty($_SESSION['id_usuario'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sistema de Recepcionista</title>
-  <link rel="icon" href="../imagenes/hospital-icon.png" type="image/png">
+  <link rel="icon" href="../imagenes/kaguyafondo.jpg" type="image/png">
   <link rel="stylesheet" href="../css/mainRecepcionista.css">
 </head>
 <body>
@@ -153,6 +153,10 @@ if (empty($_SESSION['id_usuario'])) {
     <div class="funcionExtra">
       <h4>Cobrar medicamentos</h4>
       <a href="cobrar.html"><button class="boton">Cobrar</button></a>
+    </div>
+    <div class="funcionExtra">
+      <h4>Dar de baja un Doctor</h4>
+      <a href="darBajaDoctorhtml.php"><button class="boton">Dar de baja</button></a>
     </div>
   </div>
 

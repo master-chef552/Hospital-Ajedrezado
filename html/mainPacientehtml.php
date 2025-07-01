@@ -12,7 +12,7 @@ if (empty($_SESSION['id_usuario'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pagina de citas</title>
-  <link rel="icon" href="../imagenes/hospital-icon.png" type="image/png">
+  <link rel="icon" href="../imagenes/kaguyafondo.jpg" type="image/png">
   <link rel="stylesheet" href="../css/mainPaciente.css">
 </head>
 <body>
@@ -285,5 +285,6 @@ selDoc.disabled = false;
     });
   });
   </script>
+  
 </body>
 </html>

@@ -1,71 +1,75 @@
-<!-- Inicio de perfilDoc.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil del doctor</title>
-  <link rel="icon" href="../imagenes/hospital-icon.png" type="image/png">
-  <link rel="stylesheet" href="../css/perfilRecepcionista.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perfil del paciente</title>
+  <link rel="icon" href="../imagenes/kaguyafondo.jpg" type="image/png">
+  <link rel="stylesheet" href="../css/perfilPaciente.css">
 </head>
 <body>
-  <!-- Barra de navegación -->
+  <!-- Navbar -->
   <div class="navbar">
-    <a href="mainRecepcionista.html" class="color">
+    <a href="mainRecepcionistahtml.php" class="color">
       <div class="hospital-name">Hospital Ajedrezado</div>
     </a>
     <div class="profile-button">
-        <img src="../imagenes/sesion.png" alt="Perfil">
+      <img src="../imagenes/sesion.png" alt="Perfil">
     </div>
   </div>
 
-  <!-- Contenedor principal del perfil -->
+  <!-- Contenedor principal -->
   <div class="profile-container">
-    <h1>Perfil del Doctor</h1>
-    
+    <h1>Perfil del Paciente</h1>
     <div class="profile-details">
-      <!-- Foto del paciente -->
       <div class="profile-photo">
         <img src="../imagenes/sesion.png" alt="Foto del Paciente">
       </div>
-      <!-- Información del paciente -->
       <div class="profile-info">
         <table>
           <tr>
-            <th>Nombre:</th>
-            <td>Juan Pérez</td>
+            <th>Nombre completo:</th>
+            <td id="td-nombre">Cargando…</td>
           </tr>
           <tr>
-            <th>CURP:</th>
-            <td>LOMN051130HDGPRCA1</td>
-          </tr>
-          <tr>
-            <th>Fecha de Nacimiento:</th>
-            <td>13/11/2005</td>
+            <th>Fecha de nacimiento:</th>
+            <td id="td-fecha_nacimiento">Cargando…</td>
           </tr>
           <tr>
             <th>Correo:</th>
-            <td>juan.perez@example.com</td>
+            <td id="td-correo">Cargando…</td>
           </tr>
           <tr>
             <th>Teléfono:</th>
-            <td>+52 55 1234 5678</td>
+            <td id="td-telefono">Cargando…</td>
           </tr>
-          <tr>
-            <th>Dirección:</th>
-            <td>Calle Falsa 123, Ciudad, País</td>
-          </tr>
-          <!-- Puedes agregar más filas según la información disponible -->
         </table>
       </div>
     </div>
-    
     <div class="profile-footer">
-      <p>Información obtenida de la base de datos.</p>
-      <p>(Esta funcionalidad aún no está implementada)</p>
+      <p>Datos obtenidos de la base de datos.</p>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('../php/perfilPaciente.php', { credentials: 'include' })
+        .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
+        .then(u => {
+          // Rellenamos los campos disponibles
+          document.getElementById('td-nombre').textContent =
+            `${u.nombre} ${u.ap_paterno} ${u.ap_materno}`;
+          document.getElementById('td-fecha_nacimiento').textContent =
+            new Date(u.fecha_nacimiento).toLocaleDateString('es-MX');
+          document.getElementById('td-correo').textContent = u.correo;
+          document.getElementById('td-telefono').textContent = u.telefono;
+        })
+        .catch(err => {
+          console.error('Error cargando perfil:', err);
+          document.querySelectorAll('.profile-info td')
+            .forEach(td => td.textContent = '—');
+        });
+    });
+  </script>
 </body>
 </html>
-
-<!-- fin de perfilDoc.html -->
