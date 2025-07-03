@@ -288,7 +288,6 @@ function mostrarHistorial(id_paciente){
   </thead>
   <tbody>`;
 
-historial.forEach(item => {
   historialHTML += `
     <tr>
       <td><strong>Fecha:</strong></td>
@@ -316,6 +315,9 @@ historial.forEach(item => {
     </tr>
     <tr><td colspan="2"><hr></td></tr>
   `;
+
+historial.forEach(item => {
+  
 });
 
 historialHTML += `</tbody>
@@ -325,7 +327,7 @@ historialHTML += `</tbody>
       DivHistorial.innerHTML = historialHTML;
     })
     .catch(error => {
-      DivHistorial.innerHTML = `<p>Error: el paciente no tiene historial</p>`;
+      DivHistorial.innerHTML = `<p>Error al cargar el historial</p>`;
       console.error(error);
     });
 }

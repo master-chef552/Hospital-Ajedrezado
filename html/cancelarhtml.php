@@ -1,3 +1,18 @@
+<?php
+session_start();
+if (empty($_SESSION['id_usuario'])) {
+    header('Location: login.html');
+    exit;
+}
+
+$id_paciente = $_POST['id_paciente'] ?? null;
+$id_cita     = $_POST['id_cita'] ?? null;
+
+if (!$id_paciente || !$id_cita) {
+    die("Faltan datos necesarios para atender la cita.");
+}
+
+?>
 <!-- Inicio de cancelar.html -->
 <!DOCTYPE html>
 <html lang="es">
